@@ -1,0 +1,317 @@
+<html>
+
+<head>
+	<meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</head>
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+<!---bootstrap--->
+<span id="FB_STATUS_2"></span>
+<style>
+	@media screen and (max-width: 2000px) {
+		.third-login {
+			margin: 0 auto;
+			align-items: center;
+		}
+
+		a {
+			height: 80px;
+		}
+
+		.btn {
+			font-size: 30px;
+			height: auto;
+		}
+
+		.range {
+			background-color: rgb(255, 255, 255);
+			width: 50%;
+			height: 600px;
+			display: flex;
+			align-items: center;
+			min-width: 600px;
+			max-width: 600px;
+			border-color: rgba(233, 128, 49, 0.5);
+			border-width: 3px;
+			border-style: solid;
+			border-radius: 6px;
+		}
+
+		.parent {
+			position: relative;
+			margin: 0 auto;
+			height: auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.fb-login-button {
+			transform: scale(1.5);
+		}
+	}
+
+	@media screen and (max-width: 600px) {
+		.third-login {
+			margin: 0 auto;
+			width: 90%;
+		}
+
+		.range {
+			background-color: rgb(241, 242, 230);
+			width: 100%;
+			border: initial;
+			min-width: 300px;
+		}
+
+		.parent {
+			position: none;
+			margin: none;
+			height: auto;
+			display: flex;
+			justify-content: none;
+			;
+		}
+	}
+
+	.separator {
+		display: flex;
+		align-items: center;
+		text-align: center;
+		position: relative;
+		padding: 10px;
+	}
+
+	.separator::before,
+	.separator::after {
+		content: '';
+		flex: 2;
+		border-bottom: 1px solid rgb(184, 184, 184);
+	}
+
+	.separator:not(:empty)::before {
+		margin-right: .25em;
+	}
+
+	.separator:not(:empty)::after {
+		margin-left: .25em;
+	}
+
+	.g-signin2 {
+		display: none;
+	}
+</style>
+
+<body>
+	<p class="text-center">Back to <a href="/flyingX">
+			Main Page</a></p>
+	<hr>
+	<div class="parent">
+		<div class="range">
+			<div class="third-login">
+				<a href="" class="btn btn-group-justified btn-block btn-outline-info"> <i
+						class="fab fa-twitter"></i>  
+					Login
+					Twitter</a>
+				<br>
+				<button id="FB_login" class="btn btn-group-justified btn-block btn-outline-primary">
+					<i class="fab fa-facebook"></i>  
+					Login
+					Facebook</button>
+				<br>
+				<div class="g-signin2"></div>
+				<button id="Google_login" class="btn btn-group-justified btn-block btn-outline-dark"
+					role="button" style="text-transform:none" data-onsuccess="onSignIn">
+					<img width="20px" style="margin-bottom:3px; margin-right:5px"
+						alt="Google sign-in"
+						src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+					 
+					Login
+					Google</button>
+				<br>
+				<div class="separator">OR</div>
+				<form>
+					<div class="form-group">
+						<input name="" class="form-control" placeholder="Email or login"
+							type="email">
+					</div>
+					<div class="form-group">
+						<input class="form-control" placeholder="******" type="password">
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<button type="button" class="btn btn-secondary btn-sm">
+									Login
+								</button>
+							</div> <!-- form-group// -->
+						</div>
+						<div class="col-md-8 text-right">
+							<div class="col">
+								<a class="small" href="#">Forgot password?</a>
+							</div>
+						</div>
+						<div style="color:rgb(142, 42, 35)" class="col text-right">
+							No have account? <a class="small" href="#">Register
+								Now</a>
+						</div>
+					</div>
+			</div> <!-- .row// -->
+			</form>
+		</div>
+	</div>
+	</div>
+</body>
+<br>
+<br>
+<a href="#" onclick="signOut();">Google Sign out</a>
+<script>
+	function signOut() {
+		var auth2 = gapi.auth2.getAuthInstance();
+		auth2.signOut().then(function () {
+			console.log('User signed out.');
+		});
+	}
+</script>
+<!--FB Script-->
+<script>
+	window.fbAsyncInit = function () {
+		FB.init({
+			appId: '313603633877408',
+			cookie: true,
+			xfbml: true,
+			version: 'v3.2'
+		});
+		FB.AppEvents.logPageView();
+	};
+
+	// 處理各種登入身份
+	function statusChangeCallback(response) {
+		console.log(response);
+		var target = document.getElementById("FB_STATUS_2"),
+			html = "";
+
+		// 登入 FB 且已加入會員
+		if (response.status === 'connected') {
+			html = "已登入 FB，並加入 WFU BLOG DEMO 應用程式<br/>";
+
+			FB.api('/me?fields=id,name,email', function (response) {
+				console.log(response);
+				html += "會員暱稱：" + response.name + "<br/>";
+				html += "會員 email：" + response.email;
+				target.innerHTML = html;
+			});
+		}
+
+		// 登入 FB, 未偵測到加入會員
+		else if (response.status === "not_authorized") {
+			target.innerHTML = "已登入 FB，但未加入 WFU BLOG DEMO 應用程式";
+		}
+
+		// 未登入 FB
+		else {
+			target.innerHTML = "未登入 FB";
+		}
+	}
+
+	// 點擊登入
+	$("#FB_login").click(function () {
+		// 進行登入程序
+		FB.login(function (response) {
+			statusChangeCallback(response);
+		}, {
+			scope: 'public_profile,email'
+		});
+	});
+
+	// 點擊登出
+	$("#FB_logout").click(function () {
+		FB.logout(function (response) {
+			statusChangeCallback(response);
+		});
+	});
+
+	// 載入 FB SDK
+	(function (d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "https://connect.facebook.net/zh_TW/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+</script>
+<!---google apk--->
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script type="text/javascript">
+
+	$("#Google_login").on("click", function () {
+		GoogleLogin();
+	});
+	function GoogleLogin() {
+		let auth2 = gapi.auth2.getAuthInstance();//取得GoogleAuth物件
+		auth2.signIn().then(function (GoogleUser) {
+			console.log("Google登入成功");
+			let user_id = GoogleUser.getId();//取得user id，不過要發送至Server端的話，請使用↓id_token   
+			let AuthResponse = GoogleUser.getAuthResponse(true);//true會回傳access token ，false則不會，自行決定。如果只需要Google登入功能應該不會使用到access token
+			let id_token = AuthResponse.id_token;//取得id_token
+			$.ajax({
+				url: id_token_to_userIDUrl,
+				method: "post",
+				data: { id_token: id_token },
+				success: function (msg) {
+					console.log(msg);
+				}
+			});//end $.ajax 
+
+		},
+			function (error) {
+				console.log("Google登入失敗");
+				console.log(error);
+			});
+
+	}//end function GoogleLogin
+	function Google_disconnect() {
+		let auth2 = gapi.auth2.getAuthInstance(); //取得GoogleAuth物件
+
+		auth2.disconnect().then(function () {
+			console.log('User disconnect.');
+		});
+	}
+	function GoogleSigninInit() {
+		gapi.load('auth2', function () {
+			gapi.auth2.init({
+				client_id: GoolgeApp_Cient_Id//必填，記得開發時期要開啟 Chrome開發人員工具 查看有沒有403錯誤(Javascript來源被禁止)
+			});
+		});//end gapi.load
+	}//end GoogleSigninInit function
+	function onSuccess(googleUser) {
+		console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+	}
+	function onSignIn(googleUser) {
+		var profile = googleUser.getBasicProfile();
+		console.log('ID: ' + profile.getId());
+		console.log('Name: ' + profile.getName());
+		console.log('Image URL: ' + profile.getImageUrl());
+		console.log('Email: ' + profile.getEmail());
+	}
+	function onFailure(error) {
+		console.log(error);
+	}
+	function renderButton() {
+		gapi.signin2.render('Google_login', {
+			'scope': 'profile email',
+			'width': 240,
+			'height': 50,
+			'longtitle': true,
+			'theme': 'dark',
+			'onsuccess': onSuccess,
+			'onfailure': onFailure
+		});
+	}
+</script>
+
+</html>
