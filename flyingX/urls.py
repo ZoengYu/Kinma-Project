@@ -21,4 +21,5 @@ from website import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('website.urls')),
+    path('oauth/',include('social_django.urls',namespace="social")),
 ]

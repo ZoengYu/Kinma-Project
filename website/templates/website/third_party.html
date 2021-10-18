@@ -1,7 +1,8 @@
 <html>
 
 <head>
-	<meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+	<meta name="google-signin-client_id"
+		content="413675278806-vrfpgqcsdorhgbdr8kq97pkbad6ujdc7.apps.googleusercontent.com">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 </head>
 
@@ -30,7 +31,7 @@
 		.range {
 			background-color: rgb(255, 255, 255);
 			width: 50%;
-			height: 600px;
+			height: auto;
 			display: flex;
 			align-items: center;
 			min-width: 600px;
@@ -117,20 +118,38 @@
 					Login
 					Twitter</a>
 				<br>
+				<button id="FB_login2" class="btn btn-group-justified btn-block btn-outline-primary">
+					<a href="{% url 'social:begin' 'facebook' %}"><i class="fab fa-facebook"></i>  
+						Login Django
+						Facebook</a></button>
+				<br>
 				<button id="FB_login" class="btn btn-group-justified btn-block btn-outline-primary">
 					<i class="fab fa-facebook"></i>  
-					Login
+					Login JDK
 					Facebook</button>
 				<br>
 				<div class="g-signin2"></div>
+				<a href="{% url 'social:begin' 'google-oauth2' %}">
+					<button id="Google_login2"
+						class="btn btn-group-justified btn-block btn-outline-dark" role="button"
+						style="text-transform:none" data-onsuccess="onSignIn">
+						<img width="20px" style="margin-bottom:3px; margin-right:5px"
+							alt="Google sign-in"
+							src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+						 
+						Login Django
+						Google</button>
+				</a>
+				<br>
 				<button id="Google_login" class="btn btn-group-justified btn-block btn-outline-dark"
 					role="button" style="text-transform:none" data-onsuccess="onSignIn">
 					<img width="20px" style="margin-bottom:3px; margin-right:5px"
 						alt="Google sign-in"
 						src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
 					 
-					Login
+					Login JDK
 					Google</button>
+
 				<br>
 				<div class="separator">OR</div>
 				<form>
@@ -163,11 +182,13 @@
 			</form>
 		</div>
 	</div>
+	<div class="fb-like" data-share="true" data-width="450" data-show-faces="true">
 	</div>
 </body>
 <br>
 <br>
 <a href="#" onclick="signOut();">Google Sign out</a>
+<a href='#' id='FB_logout'>FB Sign Out</a>
 <script>
 	function signOut() {
 		var auth2 = gapi.auth2.getAuthInstance();
@@ -180,10 +201,10 @@
 <script>
 	window.fbAsyncInit = function () {
 		FB.init({
-			appId: '313603633877408',
+			appId: '870640497204998',
 			cookie: true,
 			xfbml: true,
-			version: 'v3.2'
+			version: 'v11.0'
 		});
 		FB.AppEvents.logPageView();
 	};
@@ -196,7 +217,7 @@
 
 		// 登入 FB 且已加入會員
 		if (response.status === 'connected') {
-			html = "已登入 FB，並加入 WFU BLOG DEMO 應用程式<br/>";
+			html = "已登入 FB，並加入 flyingX 應用程式<br/>";
 
 			FB.api('/me?fields=id,name,email', function (response) {
 				console.log(response);
@@ -258,14 +279,21 @@
 			let user_id = GoogleUser.getId();//取得user id，不過要發送至Server端的話，請使用↓id_token   
 			let AuthResponse = GoogleUser.getAuthResponse(true);//true會回傳access token ，false則不會，自行決定。如果只需要Google登入功能應該不會使用到access token
 			let id_token = AuthResponse.id_token;//取得id_token
-			$.ajax({
-				url: id_token_to_userIDUrl,
-				method: "post",
-				data: { id_token: id_token },
-				success: function (msg) {
-					console.log(msg);
-				}
-			});//end $.ajax 
+			var profile = GoogleUser.getBasicProfile();
+			console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+			console.log('Name: ' + profile.getName());
+			console.log('Image URL: ' + profile.getImageUrl());
+			console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+			//var id_token = googleUser.getAuthResponse().id_token;
+			console.log("ID Token: " + id_token);
+			// $.ajax({
+			// 	url: 'http://localhost:8000',
+			// 	method: "get",
+			// 	data: { id_token: id_token },
+			// 	success: function (msg) {
+			// 		console.log(msg);
+			// 	}
+			// });//end $.ajax 
 
 		},
 			function (error) {
@@ -284,7 +312,8 @@
 	function GoogleSigninInit() {
 		gapi.load('auth2', function () {
 			gapi.auth2.init({
-				client_id: GoolgeApp_Cient_Id//必填，記得開發時期要開啟 Chrome開發人員工具 查看有沒有403錯誤(Javascript來源被禁止)
+				client_id: '413675278806-vrfpgqcsdorhgbdr8kq97pkbad6ujdc7.apps.googleusercontent.com',//必填，記得開發時期要開啟 Chrome開發人員工具 查看有沒有403錯誤(Javascript來源被禁止)
+				cookiepolicy: 'single_host_origin',
 			});
 		});//end gapi.load
 	}//end GoogleSigninInit function
@@ -293,10 +322,12 @@
 	}
 	function onSignIn(googleUser) {
 		var profile = googleUser.getBasicProfile();
-		console.log('ID: ' + profile.getId());
+		console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
 		console.log('Name: ' + profile.getName());
 		console.log('Image URL: ' + profile.getImageUrl());
-		console.log('Email: ' + profile.getEmail());
+		console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+		var id_token = googleUser.getAuthResponse().id_token;
+		console.log("ID Token: " + id_token);
 	}
 	function onFailure(error) {
 		console.log(error);

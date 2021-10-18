@@ -1,0 +1,220 @@
+.project_container {
+	height: auto;
+	position: relative;
+	padding-top: 20px;
+	margin: auto;
+	border-style: dashed;
+	border-color: rgba(252, 191, 23, 0.5);
+	overflow: auto;
+	max-width: 1000px;
+}
+
+.container-fluid {
+	margin-right: auto;
+	margin-left: auto;
+	padding-right: 30px;
+	padding-left: 30px;
+	width: 100%;
+	max-width: 1300px;
+}
+
+.logo {
+	font-size: 30pt;
+	align-self: flex-end;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 5px;
+	font-style: oblique;
+}
+
+#toogle button{
+	padding-top:20px;
+}
+
+body {
+	padding-top: 100px;
+	position: relative;
+}
+
+#myNavbar{
+	margin-top:12px;
+}
+
+.pull-center {
+	display: inline-block;
+	float: none;
+	vertical-align: top;
+	margin: 0 auto;
+}
+
+.search_inner {
+	text-align: center;
+}
+
+.btn-secondary {
+	color: #fff;
+	background-color: #4a555bba;
+}
+
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+
+.grid {
+	display: grid;
+	background: #616565;
+	width: auto;
+	height: auto;
+	grid-template-areas:
+		"card1 card2 card3"
+		"card4 . ."
+		". . .";
+	grid-gap: 5px;
+	grid-template-columns: repeat(3, 1fr);
+}
+
+@media screen and (max-width: 4000px) {
+	.project_title {
+		text-align: left;
+		font-size: 30px;
+		word-spacing: 5px;
+		text-indent: 5px;
+
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	.grid {
+		grid-template-columns: 1fr 1fr;
+		grid-template-areas:
+			"card1 card2"
+			"card3 card4"
+			". . ";
+	}
+
+	.project_title {
+		text-align: left;
+		font-size: 28px;
+		word-spacing: 5px;
+		text-indent: 5px;
+
+	}
+}
+
+@media screen and (max-width: 550px) {
+	.grid {
+		display: flex;
+		flex-wrap: wrap;
+		grid-template-areas:
+			"card1"
+			"card2"
+			"card3"
+			"card4"
+			"";
+	}
+
+	.project_title {
+		text-align: left;
+		font-size: 28px;
+		word-spacing: 4px;
+		text-indent: 4px;
+
+	}
+}
+
+@media screen and (max-width: 345px) {
+	.project_title {
+		text-align: left;
+		font-size: 16px;
+		word-spacing: 3px;
+		text-indent: 3px;
+	}
+}
+
+.card1 {
+	grid-area: card1;
+	padding: 10px;
+}
+
+.card2 {
+	grid-area: card2;
+	padding: 10px;
+}
+
+.card3 {
+	grid-area: card3;
+	padding: 10px;
+}
+
+.card4 {
+	grid-area: card4;
+	padding: 10px;
+}
+
+.card-body {
+	display: inline-flexbox;
+	height: 100px;
+	max-height: 100px;
+	text-align: center;
+	margin-left: 8px;
+	margin-right: 8px;
+	padding-top: 10px;
+	color: lavender;
+	justify-content: center;
+	overflow-y: hidden;
+}
+
+.card-img-top {
+	padding-top: 20px;
+	display: block;
+	margin: auto;
+	padding: 10px;
+	max-width: 100%;
+	height: auto;
+}
+
+.card-text {
+	position: relative;
+	display: flex;
+}
+
+.project_owner {
+	color: #eebaba;
+	text-align: left;
+	font-size: 18px;
+}
+
+hr {
+	position: relative;
+	margin: 20px;
+}
+
+#id {
+	position: relative;
+	clear: both;
+}
+
+ul.banner {
+	margin: 0 auto;
+	padding: 0;
+	color: rgb(224, 63, 51);
+	background-color: #eee;
+	width: 100%;
+	height: 485px;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+}
+
+.item {
+	max-height:100%;
+	max-width:100%;
+	width: auto;
+	height:auto;
+	position: absolute;
+	margin:auto;
+}
