@@ -1,4 +1,6 @@
-/data/*
+/data/
 .tmp
 *.pyc
 */migrations/*
+node_modules
+__pycache__
