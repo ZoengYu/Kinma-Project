@@ -1,16 +1,16 @@
 version: "3.9"
    
 services:
-  envoy:
-    build:
-      context: ./
-      dockerfile: ./envoy/Dockerfile
-    image: grpcweb/envoy
-    ports:
-      - "10000:10000"
-      - "9901:9901"
-    links:
-      - server
+  # envoy:
+  #   build:
+  #     context: ./
+  #     dockerfile: ./envoy/Dockerfile
+  #   image: grpcweb/envoy
+  #   ports:
+  #     - "10000:10000"
+  #     - "9901:9901"
+  #   links:
+  #     - server
   db:
     image: postgres
     volumes:
@@ -20,7 +20,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   server:
-    build: .
+    build:
+      context: .
+      dockerfile: ./dockerfile/dockerfile.flyingX
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -29,3 +31,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
+  kinma-ui:
+      build:
+        context: .
+        dockerfile: ./dockerfile/Dockerfile.ui
+      ports:
+        - "80:80"

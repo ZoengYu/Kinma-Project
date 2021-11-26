@@ -1,0 +1,15 @@
+FROM node:14.17.1 as builder
+WORKDIR /app/
+COPY ./kinma-frontend/package*.json ./
+COPY ./kinma-frontend/package-lock*.json ./
+RUN npm install
+COPY ./kinma-frontend/ ./
+RUN npm run ng build --output-path=dist --configuration=production
+
+# pull nginx image
+FROM nginx:alpine
+# 從第一階段的檔案copy
+COPY --from=builder /app/dist/ /usr/share/nginx/html
+
+# 覆蓋image裡的設定檔
+COPY ./nginx-custom.conf /etc/nginx/conf.d/default.conf

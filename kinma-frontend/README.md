@@ -30,3 +30,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ng new kinma-frontend
 npm install bootstrap
 npm i mdb-angular-ui-kit
+npm install angular-bootstrap-md --save
+
+#build Angular build to docker
+1. docker-compose up kinma-ui
+2. http://localhost:80
