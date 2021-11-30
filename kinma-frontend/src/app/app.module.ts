@@ -6,10 +6,14 @@ import { AppComponent } from './app.component';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
 import { HeaderComponent } from './header/header.component';
+import { BannerComponent } from './banner/banner.component';
+import { ProductCartComponent } from './product-cart/product-cart.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    BannerComponent,
+    ProductCartComponent
   ],
   imports: [
     BrowserModule,
