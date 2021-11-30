@@ -1,10 +1,9 @@
-.row {
-	text-align: center;
-}
-
 .blockHead {
 	justify-content: space-between;
 	display: flex;
+	margin-bottom: 5px;
+	padding-left: 14px;
+	padding-right: 14px;
 }
 
 .hot-project-text {
@@ -29,6 +28,6 @@
 	border-color: gray;
 }
 
-.col-md-4{
-	border-style:solid;
+.projectCards{
+	margin: 0;
 }

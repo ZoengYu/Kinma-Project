@@ -8,12 +8,14 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { HeaderComponent } from './header/header.component';
 import { BannerComponent } from './banner/banner.component';
 import { ProductCartComponent } from './product-cart/product-cart.component';
+import { ProjectCardComponent } from './project-card/project-card.component';
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     BannerComponent,
-    ProductCartComponent
+    ProductCartComponent,
+    ProjectCardComponent
   ],
   imports: [
     BrowserModule,

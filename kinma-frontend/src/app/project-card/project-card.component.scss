@@ -1,0 +1,55 @@
+.projectCard{
+	max-width: 880px;
+	width: 100%;
+	position: relative;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.thumbnail{
+	text-align: center;
+	overflow: hidden;
+	max-width: 100%;
+	min-height:150px;
+	height: auto;
+}
+
+.content{
+	font-weight: 500;
+	height: 135px;
+}
+
+.tag button{
+	margin-top: 10px;
+	margin-left: 0px;
+}
+
+.title{
+	font-size: 16px;
+	line-height: 1.5;
+	letter-spacing: 2px;
+}
+.owner{
+	font-size: 12px;
+	letter-spacing: 1.6px;
+	line-height: 1.6;
+	overflow: hidden;
+	display: block;
+	color:grey;
+}
+
+.schedule{
+	font-size: 16px;
+	line-height: 1.5;
+	letter-spacing: 2px;
+	font-weight: 700;
+	margin-bottom: 40px;
+}
+
+span .target{
+	text-align: left;
+}
+
+.pull-right{
+	float: right;
+}
