@@ -1,0 +1,35 @@
+.mainBlock{
+	margin-top: 10px;
+	padding: 50px;
+	background-color: rgb(242, 255, 254);
+	height:300px;
+}
+
+.category-block{
+		color:darkorange;
+		font-style:oblique;
+		font-weight:700;
+		font-size: 24px;
+		letter-spacing: 3px;
+		margin-bottom: 30px;
+}
+
+.catagory-item{
+	width: 100px;
+	max-width:  100%;
+	display: block;
+	margin: auto;
+
+	text-align: center;
+	background-color: rgb(255, 204, 204);
+	border-radius: 50%;
+	line-height: 100px;
+}
+
+.circle-icon{
+	vertical-align: middle;
+}
+
+.catagory-title{
+	text-align: center;
+}
