@@ -17,7 +17,7 @@ export class CategoryComponent implements OnInit {
     dots: true,
     responsive: {
       0: {
-        items: 5
+        items: 6
       },
     },
     nav: true,

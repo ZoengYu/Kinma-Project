@@ -1,0 +1,8 @@
+<div class="container classic">
+	<app-block-header title='經典案例'></app-block-header>
+	<div class="row projectCards">
+		<div *ngFor="let data of datas;" class="col-md-4 col-sm-6">
+			<app-project-card [img]=data.srcImg [labels]=data.labels [title]=data.title [price]=data.price [date]=data.date [owner]=data.owner></app-project-card>
+		</div>
+	</div>
+</div>

@@ -22,6 +22,14 @@ export class ProjectCardComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.checkDate()
   }
 
+  checkDate(){
+    if (this.date=='0') {
+      this.date = '已結束';
+    } else {
+      this.date ='剩餘'+this.date+'天';
+    }
+  }
 }

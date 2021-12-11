@@ -12,6 +12,8 @@ import { BannerComponent } from './banner/banner.component';
 import { ProductCartComponent } from './product-cart/product-cart.component';
 import { ProjectCardComponent } from './project-card/project-card.component';
 import { CategoryComponent } from './category/category.component';
+import { ClassicProductCartComponent } from './classic-product-cart/classic-product-cart.component';
+import { BlockHeaderComponent } from './block-header/block-header.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +21,9 @@ import { CategoryComponent } from './category/category.component';
     BannerComponent,
     ProductCartComponent,
     ProjectCardComponent,
-    CategoryComponent
+    CategoryComponent,
+    ClassicProductCartComponent,
+    BlockHeaderComponent
   ],
   imports: [
     BrowserModule,
