@@ -4,7 +4,7 @@ COPY ./kinma-frontend/package*.json ./
 COPY ./kinma-frontend/package-lock*.json ./
 RUN npm install
 COPY ./kinma-frontend/ ./
-RUN npm run ng build --output-path=dist --configuration=production
+RUN npm run ng build --output-path=dist --output-hashing=all --configuration=production
 
 # pull nginx image
 FROM nginx:alpine
