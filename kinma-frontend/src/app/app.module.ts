@@ -14,6 +14,7 @@ import { ProjectCardComponent } from './project-card/project-card.component';
 import { CategoryComponent } from './category/category.component';
 import { ClassicProductCartComponent } from './classic-product-cart/classic-product-cart.component';
 import { BlockHeaderComponent } from './block-header/block-header.component';
+import { FooterComponent } from './footer/footer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +24,8 @@ import { BlockHeaderComponent } from './block-header/block-header.component';
     ProjectCardComponent,
     CategoryComponent,
     ClassicProductCartComponent,
-    BlockHeaderComponent
+    BlockHeaderComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
