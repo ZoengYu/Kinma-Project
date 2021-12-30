@@ -1,5 +1,58 @@
-<h1 mat-dialog-title>Login dialog</h1>
-<div mat-dialog-content>This dialog showcases the title, close, content and actions elements.</div>
-<div mat-dialog-actions>
-  <button mat-button mat-dialog-close>Close</button>
+<div id="loginDialog">
+	<mdb-card>
+		<mdb-card-header class="info-color white-text text-center py-2">
+			<h5>
+				<strong>Sign in</strong>
+			</h5>
+		</mdb-card-header>
+
+		<mdb-card-body class="px-lg-5 pt-0">
+			<form #userPost="ngForm" (ngSubmit)="onSubmit(userPost)" class="text-center" style="color: #757575;">
+
+				<!-- Email -->
+				<div class="md-form">
+					<input type="email" id="materialLoginFormEmail" class="form-control" name="email" ngModel mdbInput>
+					<label for="materialLoginFormEmail">電子郵箱</label>
+				</div>
+
+				<!-- Password -->
+				<div class="md-form">
+					<input type="password" id="materialLoginFormPassword" class="form-control" name="password" ngModel mdbInput>
+					<label for="materialLoginFormPassword">密碼</label>
+				</div>
+
+				<div class="d-flex justify-content-around">
+					<div>
+						<!-- Remember me -->
+						<mdb-checkbox>記住我</mdb-checkbox>
+					</div>
+					<div>
+						<!-- Forgot password -->
+						<a href="">忘記密碼?</a>
+					</div>
+				</div>
+
+				<!-- Sign in button -->
+				<button mdbBtn 
+				color="info" [outline]="true" [rounded]="true" [block]="true" class="my-4 waves-effect z-depth-0" mdbWavesEffect
+					type="submit">登入</button>
+
+				<!-- Register -->
+				<p>還不是會員?
+					<a href="">註冊</a>
+				</p>
+
+				<!-- Social login -->
+				<p>第三方登入</p>
+				<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="fb" size="lg">
+					<mdb-icon fab icon="facebook"></mdb-icon>
+				</a>
+				<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="tw" size="lg">
+					<mdb-icon fab icon="google-plus"></mdb-icon>
+				</a>
+
+			</form>
+		</mdb-card-body>
+
+	</mdb-card>
 </div>

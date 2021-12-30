@@ -10,7 +10,7 @@ import {MatDialog} from '@angular/material/dialog';
 export class HeaderComponent implements OnInit {
 
   constructor(
-    public dialog: MatDialog
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -19,7 +19,10 @@ export class HeaderComponent implements OnInit {
 
   openLoginDialog(){
     console.log('login page open!')
-    this.dialog.open(LoginComponent);
+    const dialogRef = this.dialog.open(LoginComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`)
+    })
   }
 
 }

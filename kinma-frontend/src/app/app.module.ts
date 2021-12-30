@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule,routingComponents } from './app-routing.module';
 
 import { MatDialogModule } from '@angular/material/dialog'
+import { FormsModule }   from '@angular/forms';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,9 +45,11 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MDBBootstrapModule.forRoot(),
     BrowserAnimationsModule,
     CarouselModule,
-    MatDialogModule
+    MatDialogModule,
+    FormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents:[LoginComponent]
 })
 export class AppModule { }
