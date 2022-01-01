@@ -37,13 +37,11 @@
 				color="info" [outline]="true" [rounded]="true" [block]="true" class="my-4 waves-effect z-depth-0" mdbWavesEffect
 					type="submit">登入</button>
 
-				<!-- Register -->
-				<p>還不是會員?
-					<a href="">註冊</a>
-				</p>
-
+					<p>還不是會員?
+						<strong><a (click)="openRegisterPage()">註冊</a></strong>
+					</p>
 				<!-- Social login -->
-				<p>第三方登入</p>
+				<p>或使用第三方登入</p>
 				<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="fb" size="lg">
 					<mdb-icon fab icon="facebook"></mdb-icon>
 				</a>

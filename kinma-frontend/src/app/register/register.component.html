@@ -1,0 +1,50 @@
+<div id="registerDialog">
+	<mdb-card>
+		<mdb-card-header class="info-color white-text text-center py-2">
+			<h5>
+				<strong>Sign Up</strong>
+			</h5>
+		</mdb-card-header>
+		
+			<mdb-card-body class="px-lg-5 pt-0">
+				<form #userPost="ngForm" (ngSubmit)="onSubmit(userPost)" class="text-center" style="color: #757575;">
+
+					<div class="md-form">
+							<input type="text" id="defaultRegisterFormFirstName" class="form-control mb-4" ngModel name="name" placeholder="姓名">
+						</div>
+					<!-- E-mail -->
+					<div class="md-form">
+						<input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" ngModel name="email" placeholder="電子信箱">
+					</div>
+					<!-- Password -->
+					<div class="md-form">
+					<input type="password" id="defaultRegisterFormPassword" class="form-control" ngModel name="password" placeholder="密碼" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+					<small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+						*至少8個字元與1個數字
+					</small>
+				</div>
+					<!-- Phone number -->
+					<input type="text" id="defaultRegisterPhonePassword" class="form-control" ngModel name="phone" placeholder="手機號碼" aria-describedby="defaultRegisterFormPhoneHelpBlock">
+					<small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
+					</small>
+
+					<!-- Sign up button -->
+					<button mdbBtn color="info" [block]="true" class="my-4" type="submit">註冊</button>
+
+					<p>已經是會員了嗎?
+						<strong><a (click)="openLoginDialog()">登入</a></strong>
+					</p>
+					<!-- Social register -->
+					<p>或使用第三方登入</p>
+
+					<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="fb" size="lg">
+						<mdb-icon fab icon="facebook"></mdb-icon>
+					</a>
+					<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="tw" size="lg">
+						<mdb-icon fab icon="google-plus"></mdb-icon>
+					</a>
+
+				</form>
+			</mdb-card-body>
+	</mdb-card>
+</div>

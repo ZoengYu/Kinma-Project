@@ -20,7 +20,9 @@ import { FooterComponent } from './footer/footer.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-
+import { RegisterComponent } from './register/register.component';
+import { SignInComponent } from './sign-in/sign-in.component'
+import { AuthService } from './auth.service'
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,6 +38,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MainPageComponent,
     LoginComponent,
     PageNotFoundComponent,
+    RegisterComponent,
+    SignInComponent,
 
   ],
   imports: [
@@ -48,8 +52,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MatDialogModule,
     FormsModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent],
-  entryComponents:[LoginComponent]
 })
 export class AppModule { }
