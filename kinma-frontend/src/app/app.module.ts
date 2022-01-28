@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule,routingComponents } from './app-routing.module';
 
 import { MatDialogModule } from '@angular/material/dialog'
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -50,7 +50,8 @@ import { AuthService } from './auth.service'
     BrowserAnimationsModule,
     CarouselModule,
     MatDialogModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],

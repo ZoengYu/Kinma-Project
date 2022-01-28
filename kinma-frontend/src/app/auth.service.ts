@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {FormGroup,NgForm} from '@angular/forms';
 @Injectable({
   providedIn: 'root'
 })
@@ -8,12 +8,21 @@ export class AuthService {
   private _registerUrl = "";
   private _loginUrl = "";
   public loginPageActive = false;
-  constructor() { }
+  public response:string = "Success";
+  constructor() {
+   }
 
-  registerUser(user:NgForm) {
-    if (user.valid){
+  registerUser(user:FormGroup) :any {
+
+    if (user.valid && user.value.password != user.value.confirmPassword){
+      this.response = 'password inconsistent';
+      console.log("Error:請確認輸入密碼一致！");
+      return this.response
+    } else if (user.valid){
+      this.response = 'Success';
       console.log("Register Success!");
       console.log(user.value);
+      return this.response
     }
   }
 

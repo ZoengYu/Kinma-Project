@@ -7,26 +7,55 @@
 		</mdb-card-header>
 		
 			<mdb-card-body class="px-lg-5 pt-0">
-				<form #userPost="ngForm" (ngSubmit)="onSubmit(userPost)" class="text-center" style="color: #757575;">
+				<!-- #userPost="ngForm"   --> 
+				<form [formGroup]="registrationForm" (ngSubmit)="onSubmit(registrationForm)" class="text-center" style="color: #757575;">
 
-					<div class="md-form">
-							<input type="text" id="defaultRegisterFormFirstName" class="form-control mb-4" ngModel name="name" placeholder="姓名">
-						</div>
-					<!-- E-mail -->
-					<div class="md-form">
-						<input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" ngModel name="email" placeholder="電子信箱">
+					<div class="form-group md-form">
+							<input  class="form-control mb-2" formControlName="userName" type="text" placeholder="姓名">
+							<div class="mb-2" *ngIf="userName.invalid && userName.touched">
+								<small *ngIf="userName.errors?.minlength" class="text-danger">Username at least have 2</small>
+								<small *ngIf="userName.errors?.required" class="text-danger">Username is required</small>
+								<small *ngIf="userName.errors?.forbiddenName" class="text-danger">This Username is invalid</small>
+							</div>
 					</div>
+
+					<!-- E-mail -->
+					<div class="form-group md-form">
+						<input class="form-control mb-2" formControlName="userEmail" type="email" id="defaultRegisterFormEmail" placeholder="電子信箱">
+						<div class="mb-2" *ngIf="userEmail.invalid && userEmail.touched">
+							<small *ngIf="userEmail.errors?.required" class="text-danger">Email is required</small>
+							<small *ngIf="userEmail.errors?.NotMatchEmail" class="text-danger">Email 的格式不正確</small>
+						</div>
+					</div>
+
 					<!-- Password -->
-					<div class="md-form">
-					<input type="password" id="defaultRegisterFormPassword" class="form-control" ngModel name="password" placeholder="密碼" aria-describedby="defaultRegisterFormPasswordHelpBlock">
-					<small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
-						*至少8個字元與1個數字
-					</small>
+				<div class="form-group md-form">
+					<input class="form-control" formControlName="password" type="password" id="defaultRegisterFormPassword"  placeholder="密碼" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+					<div class="mb-2" *ngIf="password.invalid && password.touched">
+						<small *ngIf="password.errors?.required" class="text-danger">Password is required</small>
+						<small *ngIf="password.errors?.minlength" class="text-danger">密碼必須包含8個字元以上</small>
+						<small *ngIf="password.errors?.NotMatchPassword" class="text-danger">密碼一定要包含大小寫字母和數字</small>
+					</div>
 				</div>
+
+					<!-- Confirm Password -->
+				<div class="form-group md-form">
+					<input type="password" id="confirm-password" class="form-control" formControlName="confirmPassword" placeholder="確認密碼">
+				</div>
+				<div *ngIf="inconsistentPassword" 
+					class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size:8">
+					<button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<small>OH~ 輸入的密碼不一致<br>請確認密碼輸入正確</small>
+				</div>
+
 					<!-- Phone number -->
-					<input type="text" id="defaultRegisterPhonePassword" class="form-control" ngModel name="phone" placeholder="手機號碼" aria-describedby="defaultRegisterFormPhoneHelpBlock">
+				<div class="form-group">
+					<input type="text" class="form-control" ngModel formControlName="phoneNumber" placeholder="手機號碼">
 					<small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
 					</small>
+				</div>
 
 					<!-- Sign up button -->
 					<button mdbBtn color="info" [block]="true" class="my-4" type="submit">註冊</button>
@@ -37,12 +66,12 @@
 					<!-- Social register -->
 					<p>或使用第三方登入</p>
 
-					<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="fb" size="lg">
-						<mdb-icon fab icon="facebook"></mdb-icon>
-					</a>
-					<a type="button" class="light-blue-text mx-4" mdbBtn [floating]="true" color="tw" size="lg">
-						<mdb-icon fab icon="google-plus"></mdb-icon>
-					</a>
+					<div class="row my-3 d-flex justify-content-center">
+            <!--Facebook-->
+            <button type="button" class="btn btn-white btn-rounded mr-md-3 z-depth-1a"><i class="fab fa-facebook-f blue-text text-center"></i></button>
+            <!--Google +-->
+            <button type="button" class="btn btn-white btn-rounded z-depth-1a"><i class="fab fa-google-plus-g blue-text"></i></button>
+          </div>
 
 				</form>
 			</mdb-card-body>
