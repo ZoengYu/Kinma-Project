@@ -22,7 +22,7 @@ type Fundraise struct {
 	// must be positive
 	ProgressAmount int64        `json:"progress_amount"`
 	Success        sql.NullBool `json:"success"`
-	StartDate      sql.NullTime `json:"start_date"`
+	StartDate      time.Time    `json:"start_date"`
 	EndDate        sql.NullTime `json:"end_date"`
 }
 
