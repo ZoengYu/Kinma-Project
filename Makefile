@@ -13,4 +13,7 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" -verbose down
 
-.PHOMY: postgres createdb migrateup migratedown
+sqlc:
+	sqlc generate
+
+.PHOMY: postgres createdb migrateup migratedown sqlc

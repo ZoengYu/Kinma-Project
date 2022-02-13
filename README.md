@@ -3,8 +3,9 @@
 
 This branch use **Golang** as backend server
 
+### *If you're using MAC, below is the requirement before you launch the service.*
 
-`docker pull postgres:14-alpine`
+  `brew install sqlc` 
 
 `brew install golang-migrate`
 > migrate create -ext sql -dir db/migration -seq init_schema

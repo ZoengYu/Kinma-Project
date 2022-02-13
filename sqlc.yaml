@@ -1,0 +1,13 @@
+version: 1
+packages:
+  - path: "./db/sqlc"
+    name: "db"
+    engine: "postgresql"
+    schema: "./db/migration"
+    queries: "./db/query"
+    emit_json_tags: true
+    emit_prepared_queries: false
+    #tell sqlc generate Querier interface for the generated package, use for mock testing
+    emit_interface: false
+    #sqlc will singularize the table name to use as model struct name, accounts -> account
+    emit_exact_table_names: false
