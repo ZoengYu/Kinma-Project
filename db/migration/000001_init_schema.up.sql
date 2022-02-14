@@ -11,7 +11,8 @@ CREATE TABLE "product" (
   "title" varchar NOT NULL,
   "content" text NOT NULL,
   "product_tag" varchar NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "last_update" timestamptz
 );
 
 CREATE TABLE "fundraise" (
@@ -21,7 +22,7 @@ CREATE TABLE "fundraise" (
   "progress_amount" bigint NOT NULL,
   "success" boolean,
   "start_date" timestamptz NOT NULL DEFAULT (now()),
-  "end_date" time
+  "end_date" timestamptz
 );
 
 ALTER TABLE "product" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");

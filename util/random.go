@@ -38,3 +38,9 @@ func RandomCurrency() string {
 	n := len(currencies)
 	return currencies[rand.Intn(n)]
 }
+
+func RandomTag() string {
+	tags := []string{"tag1","tag2","tag3"}
+	n := len(tags)
+	return tags[rand.Intn(n)]
+}

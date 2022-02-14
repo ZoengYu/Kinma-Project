@@ -5,6 +5,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createProduct = `-- name: CreateProduct :one
@@ -15,7 +16,7 @@ INSERT INTO product (
 	product_tag
 ) VALUES (
   $1, $2, $3,$4
-) RETURNING id, account_id, title, content, product_tag, created_at
+) RETURNING id, account_id, title, content, product_tag, created_at, last_update
 `
 
 type CreateProductParams struct {
@@ -40,6 +41,7 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		&i.Content,
 		&i.ProductTag,
 		&i.CreatedAt,
+		&i.LastUpdate,
 	)
 	return i, err
 }
@@ -55,7 +57,7 @@ func (q *Queries) DeleteProduct(ctx context.Context, id int64) error {
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, account_id, title, content, product_tag, created_at FROM product
+SELECT id, account_id, title, content, product_tag, created_at, last_update FROM product
 WHERE id = $1 LIMIT 1
 `
 
@@ -69,12 +71,13 @@ func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
 		&i.Content,
 		&i.ProductTag,
 		&i.CreatedAt,
+		&i.LastUpdate,
 	)
 	return i, err
 }
 
 const listProduct = `-- name: ListProduct :many
-SELECT id, account_id, title, content, product_tag, created_at FROM product
+SELECT id, account_id, title, content, product_tag, created_at, last_update FROM product
 WHERE account_id = $1
 ORDER BY id
 LIMIT $2
@@ -103,6 +106,7 @@ func (q *Queries) ListProduct(ctx context.Context, arg ListProductParams) ([]Pro
 			&i.Content,
 			&i.ProductTag,
 			&i.CreatedAt,
+			&i.LastUpdate,
 		); err != nil {
 			return nil, err
 		}
@@ -117,46 +121,29 @@ func (q *Queries) ListProduct(ctx context.Context, arg ListProductParams) ([]Pro
 	return items, nil
 }
 
-const updateProductContent = `-- name: UpdateProductContent :one
+const updateProductDetail = `-- name: UpdateProductDetail :one
 UPDATE product
-SET content = $2
+SET title = $2, content = $3, product_tag = $4, last_update = $5
 WHERE id = $1
-RETURNING id, account_id, title, content, product_tag, created_at
+RETURNING id, account_id, title, content, product_tag, created_at, last_update
 `
 
-type UpdateProductContentParams struct {
-	ID      int64  `json:"id"`
-	Content string `json:"content"`
+type UpdateProductDetailParams struct {
+	ID         int64        `json:"id"`
+	Title      string       `json:"title"`
+	Content    string       `json:"content"`
+	ProductTag string       `json:"product_tag"`
+	LastUpdate sql.NullTime `json:"last_update"`
 }
 
-func (q *Queries) UpdateProductContent(ctx context.Context, arg UpdateProductContentParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, updateProductContent, arg.ID, arg.Content)
-	var i Product
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.Title,
-		&i.Content,
-		&i.ProductTag,
-		&i.CreatedAt,
+func (q *Queries) UpdateProductDetail(ctx context.Context, arg UpdateProductDetailParams) (Product, error) {
+	row := q.db.QueryRowContext(ctx, updateProductDetail,
+		arg.ID,
+		arg.Title,
+		arg.Content,
+		arg.ProductTag,
+		arg.LastUpdate,
 	)
-	return i, err
-}
-
-const updateProductTag = `-- name: UpdateProductTag :one
-UPDATE product
-SET product_tag = $2
-WHERE id = $1
-RETURNING id, account_id, title, content, product_tag, created_at
-`
-
-type UpdateProductTagParams struct {
-	ID         int64  `json:"id"`
-	ProductTag string `json:"product_tag"`
-}
-
-func (q *Queries) UpdateProductTag(ctx context.Context, arg UpdateProductTagParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, updateProductTag, arg.ID, arg.ProductTag)
 	var i Product
 	err := row.Scan(
 		&i.ID,
@@ -165,32 +152,7 @@ func (q *Queries) UpdateProductTag(ctx context.Context, arg UpdateProductTagPara
 		&i.Content,
 		&i.ProductTag,
 		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const updateProductTitle = `-- name: UpdateProductTitle :one
-UPDATE product
-SET title = $2
-WHERE id = $1
-RETURNING id, account_id, title, content, product_tag, created_at
-`
-
-type UpdateProductTitleParams struct {
-	ID    int64  `json:"id"`
-	Title string `json:"title"`
-}
-
-func (q *Queries) UpdateProductTitle(ctx context.Context, arg UpdateProductTitleParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, updateProductTitle, arg.ID, arg.Title)
-	var i Product
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.Title,
-		&i.Content,
-		&i.ProductTag,
-		&i.CreatedAt,
+		&i.LastUpdate,
 	)
 	return i, err
 }

@@ -27,10 +27,11 @@ type Fundraise struct {
 }
 
 type Product struct {
-	ID         int64     `json:"id"`
-	AccountID  int64     `json:"account_id"`
-	Title      string    `json:"title"`
-	Content    string    `json:"content"`
-	ProductTag string    `json:"product_tag"`
-	CreatedAt  time.Time `json:"created_at"`
+	ID         int64        `json:"id"`
+	AccountID  int64        `json:"account_id"`
+	Title      string       `json:"title"`
+	Content    string       `json:"content"`
+	ProductTag string       `json:"product_tag"`
+	CreatedAt  time.Time    `json:"created_at"`
+	LastUpdate sql.NullTime `json:"last_update"`
 }

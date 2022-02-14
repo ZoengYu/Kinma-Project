@@ -19,21 +19,9 @@ ORDER BY id
 LIMIT $2
 OFFSET $3;
 
--- name: UpdateProductTitle :one
+-- name: UpdateProductDetail :one
 UPDATE product
-SET title = $2
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateProductContent :one
-UPDATE product
-SET content = $2
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateProductTag :one
-UPDATE product
-SET product_tag = $2
+SET title = $2, content = $3, product_tag = $4, last_update = $5
 WHERE id = $1
 RETURNING *;
 

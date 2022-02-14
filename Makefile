@@ -13,6 +13,10 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" -verbose down
 
+#forcely migrate back to the specific version
+migrateforce:
+	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" force $1
+
 sqlc:
 	sqlc generate
 
