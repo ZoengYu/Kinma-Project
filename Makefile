@@ -16,4 +16,8 @@ migratedown:
 sqlc:
 	sqlc generate
 
-.PHOMY: postgres createdb migrateup migratedown sqlc
+# Run test and cover all of the package by ./...
+test:
+	go test -v -cover ./...
+
+.PHOMY: postgres createdb migrateup migratedown sqlc test
