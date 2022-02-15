@@ -40,7 +40,11 @@ func RandomCurrency() string {
 }
 
 func RandomTag() string {
-	tags := []string{"tag1","tag2","tag3"}
+	tags := []string{
+		RandomString(3) + "_tag1",
+		RandomString(3) + "_tag2",
+		RandomString(3) + "_tag3",
+	}
 	n := len(tags)
 	return tags[rand.Intn(n)]
 }
