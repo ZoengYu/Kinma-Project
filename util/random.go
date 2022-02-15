@@ -10,11 +10,10 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
-	
 }
 
 //Return a random integer between min and max
-func RandomInit(min, max int64) int64 {
+func RandomInt(min, max int64) int64 {
 	return min + rand.Int63n(max - min + 1)
 }
 
@@ -47,4 +46,8 @@ func RandomTag() string {
 	}
 	n := len(tags)
 	return tags[rand.Intn(n)]
+}
+
+func RandomMoney() int64 {
+	return RandomInt(0,1000)
 }

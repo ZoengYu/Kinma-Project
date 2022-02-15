@@ -10,27 +10,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomFundraise(t *testing.T) Fundraise{
-	accountArg := CreateAccountParams{
-		Owner: 		util.RandomOwner(),
-		Currency: util.RandomCurrency(),
-	}
-
-	account, _ := testQueries.CreateAccount(context.Background(),accountArg)
-
-	productArg := CreateProductParams{
-		AccountID	 : account.ID,
-		Title      : util.RandomString(5),
-		Content    : util.RandomString(20) + "_Content",
-		ProductTag : util.RandomTag(),
-	}
-
-	product, _ := testQueries.CreateProduct(context.Background(), productArg)
-
+func createRandomFundraise(t *testing.T, product Product) Fundraise{
+	amount := util.RandomMoney()
 	fundraiseArg := CreateFundraiseParams{
 		ProductID				: product.ID,
-		TargetAmount		: 10000,
-		ProgressAmount	: 5000,
+		TargetAmount		: amount,
+		ProgressAmount	: amount/2,
 	}
 	
 	fundraise, err := testQueries.CreateFundraise(context.Background(), fundraiseArg)
@@ -48,35 +33,43 @@ func createRandomFundraise(t *testing.T) Fundraise{
 }
 
 func TestCreateFundraise(t *testing.T){
-	createRandomFundraise(t)
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
+	
+	createRandomFundraise(t, product1)
 }
 
 func TestGetFundraise(t *testing.T){
-	fundraise := createRandomFundraise(t)
-	fundraise2, err := testQueries.GetFundraise(context.Background(), fundraise.ProductID)
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
+	fundraise1 := createRandomFundraise(t, product1)
+	fundraise2, err := testQueries.GetFundraise(context.Background(), fundraise1.ProductID)
 	
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise2)
-	require.Equal(t, fundraise.ProductID, fundraise2.ProductID)
-	require.Equal(t, fundraise.TargetAmount, fundraise2.TargetAmount)
-	require.Equal(t, fundraise.ProgressAmount, fundraise2.ProgressAmount)
-	require.WithinDuration(t, fundraise.StartDate, fundraise2.StartDate, time.Second)
+	require.Equal(t, fundraise1.ProductID, fundraise2.ProductID)
+	require.Equal(t, fundraise1.TargetAmount, fundraise2.TargetAmount)
+	require.Equal(t, fundraise1.ProgressAmount, fundraise2.ProgressAmount)
+	require.WithinDuration(t, fundraise1.StartDate, fundraise2.StartDate, time.Second)
 }
 
 //if progress amount exceed target amount, Success should return true
 func TestExitFundraise(t *testing.T){
-	fundraise := createRandomFundraise(t)
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
+	fundraise1 := createRandomFundraise(t, product1)
+
 	endTime := sql.NullTime {
 		Time: time.Now().UTC(),
 		Valid: true,
 	}
 	//fundraise Success
-	if (fundraise.TargetAmount < fundraise.ProgressAmount){
-		fundraise.Success = true
+	if (fundraise1.TargetAmount < fundraise1.ProgressAmount){
+		fundraise1.Success = true
 	}
 	arg := ExitFundraiseParams{
-		ProductID 	: fundraise.ProductID,
-		Success			: fundraise.Success,
+		ProductID 	: fundraise1.ProductID,
+		Success			: fundraise1.Success,
 		EndDate			: endTime,
 	}
 

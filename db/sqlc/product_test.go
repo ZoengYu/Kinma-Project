@@ -10,13 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomProduct(t *testing.T) Product{
-	accountArg := CreateAccountParams{
-		Owner: 		util.RandomOwner(),
-		Currency: util.RandomCurrency(),
-	}
-
-	account, _ := testQueries.CreateAccount(context.Background(),accountArg)
+func createRandomProduct(t *testing.T, account Account) Product{
 
 	productArg := CreateProductParams{
 		AccountID	 : account.ID,
@@ -39,11 +33,13 @@ func createRandomProduct(t *testing.T) Product{
 }
 
 func TestCreateProduct(t *testing.T){
-	createRandomProduct(t)
+	account := createRandomAccount(t)
+	createRandomProduct(t, account)
 }
 
 func TestDeleteProduct(t *testing.T){
-	product1 := createRandomProduct(t)
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
 	err := testQueries.DeleteProduct(context.Background(), product1.ID)
 	require.NoError(t, err)
 
@@ -54,7 +50,8 @@ func TestDeleteProduct(t *testing.T){
 }
 
 func TestGetProduct(t *testing.T) {
-	product1 := createRandomProduct(t)
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
 	product2, err := testQueries.GetProduct(context.Background(), product1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, product2)
@@ -63,12 +60,7 @@ func TestGetProduct(t *testing.T) {
 }
 
 func TestListProduct(t *testing.T) {
-	accountArg := CreateAccountParams{
-		Owner: 		util.RandomOwner(),
-		Currency: util.RandomCurrency(),
-	}
-
-	account, _ := testQueries.CreateAccount(context.Background(),accountArg)
+	account := createRandomAccount(t)
 	
 	for i := 0; i < 10; i++ {
 		productArg := CreateProductParams{
@@ -96,7 +88,9 @@ func TestListProduct(t *testing.T) {
 }
 
 func TestUpdateProduct(t *testing.T) {
-	product1 := createRandomProduct(t)
+	account := createRandomAccount(t)
+	product1 := createRandomProduct(t, account)
+
 	nowTime := sql.NullTime {
 		Time: time.Now().UTC(),
 		Valid: true,

@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRandomInit(t *testing.T){
-	integer := RandomInit(0,100)
-	integer2 := RandomInit(0,100)
+func TestRandomInt(t *testing.T){
+	integer := RandomInt(0,100)
+	integer2 := RandomInt(0,100)
 	require.NotEqual(t, integer, integer2)
 }
 
@@ -31,4 +31,10 @@ func TestRandomTag(t *testing.T){
 	tag2 := RandomTag()
 	tag3 := RandomTag()
 	require.NotEqual(t, tag1, tag2, tag3)
+}
+
+func TestRandomMoney(t *testing.T){
+	money1 := RandomInt(0,1000)
+	money2 := RandomInt(0,1000)
+	require.NotEqual(t, money1, money2)
 }
