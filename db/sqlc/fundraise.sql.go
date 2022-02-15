@@ -48,7 +48,7 @@ RETURNING id, product_id, target_amount, progress_amount, success, start_date, e
 
 type ExitFundraiseParams struct {
 	ProductID int64        `json:"product_id"`
-	Success   sql.NullBool `json:"success"`
+	Success   bool         `json:"success"`
 	EndDate   sql.NullTime `json:"end_date"`
 }
 

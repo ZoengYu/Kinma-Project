@@ -28,9 +28,9 @@ func createRandomProduct(t *testing.T) Product{
 	product, err := testQueries.CreateProduct(context.Background(),productArg)
 	require.NoError(t, err)
 	require.NotEmpty(t, product)
-	require.Equal(t, product.AccountID, product.AccountID)
-	require.Equal(t, product.Title, product.Title)
-	require.Equal(t, product.ProductTag, product.ProductTag)
+	require.Equal(t, product.AccountID, productArg.AccountID)
+	require.Equal(t, product.Title, productArg.Title)
+	require.Equal(t, product.ProductTag, productArg.ProductTag)
 
 	require.NotZero(t, product.ID)
 	require.Equal(t, product.AccountID, account.ID)

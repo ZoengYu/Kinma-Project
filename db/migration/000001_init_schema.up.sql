@@ -20,7 +20,7 @@ CREATE TABLE "fundraise" (
   "product_id" bigint NOT NULL,
   "target_amount" bigint NOT NULL,
   "progress_amount" bigint NOT NULL,
-  "success" boolean,
+  "success" boolean not NULL DEFAULT false,
   "start_date" timestamptz NOT NULL DEFAULT (now()),
   "end_date" timestamptz
 );
