@@ -35,7 +35,7 @@ func createRandomFundraise(t *testing.T, product Product) Fundraise{
 func TestCreateFundraise(t *testing.T){
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
-	
+
 	createRandomFundraise(t, product1)
 }
 
@@ -43,7 +43,7 @@ func TestGetFundraise(t *testing.T){
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 	fundraise1 := createRandomFundraise(t, product1)
-	fundraise2, err := testQueries.GetFundraise(context.Background(), fundraise1.ProductID)
+	fundraise2, err := testQueries.GetFundraise(context.Background(), fundraise1.ID)
 	
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise2)
@@ -77,10 +77,27 @@ func TestExitFundraise(t *testing.T){
 	require.NoError(t, err)
 	require.NotEmpty(t, endFundraise)
 	
-	fundraise2, err := testQueries.GetFundraise(context.Background(), endFundraise.ProductID)
+	fundraise2, err := testQueries.GetFundraise(context.Background(), endFundraise.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise2)
 	require.Equal(t, endFundraise.EndDate, fundraise2.EndDate)
 	require.Equal(t, endFundraise.ID, fundraise2.ID)
 	require.Equal(t, endFundraise.Success, fundraise2.Success)
+}
+
+func TestUpdateFundraise(t *testing.T){
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
+	fundraise1 := createRandomFundraise(t, product1)
+	
+	arg := UpdateFundraiseProgressAmountParams{
+		ID						: fundraise1.ID,
+		ProgressAmount: util.RandomMoney(),
+	}
+
+	updatedFundraise, err := testQueries.UpdateFundraiseProgressAmount(context.Background(),arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, updatedFundraise)
+	require.Equal(t, arg.ID, updatedFundraise.ID)
+	require.Equal(t, arg.ProgressAmount, updatedFundraise.ProgressAmount)
 }

@@ -48,7 +48,10 @@ func TestGetTransfer(t *testing.T) {
 	fundraise1 := createRandomFundraise(t, product1)
 	createdTransfer := createRandomTransfer(t, account1, fundraise1)
 
-	getTransfer, err := testQueries.GetTransfer(context.Background(), createdTransfer.ID)
+	getTransfer, err := testQueries.GetTransfer(context.Background(), GetTransferParams{
+		FromAccountID: account1.ID,
+		ToFundraiseID: fundraise1.ID,
+	})
 	require.NoError(t, err)
 	require.NotEmpty(t, getTransfer)
 	require.Equal(t, getTransfer.FromAccountID, createdTransfer.FromAccountID)

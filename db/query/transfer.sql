@@ -9,7 +9,9 @@ INSERT INTO transfers (
 
 -- name: GetTransfer :one
 SELECT * FROM transfers
-WHERE id = $1 LIMIT 1;
+WHERE 
+from_account_id = $1 OR to_fundraise_id = $2 
+LIMIT 1;
 
 -- name: ListTransfers :many
 SELECT * FROM transfers

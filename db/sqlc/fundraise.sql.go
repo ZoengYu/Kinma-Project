@@ -8,6 +8,33 @@ import (
 	"database/sql"
 )
 
+const addFundraiseProgressAmount = `-- name: AddFundraiseProgressAmount :one
+UPDATE fundraise
+SET progress_amount = progress_amount + $1
+WHERE id = $2
+RETURNING id, product_id, target_amount, progress_amount, success, start_date, end_date
+`
+
+type AddFundraiseProgressAmountParams struct {
+	Amount int64 `json:"amount"`
+	ID     int64 `json:"id"`
+}
+
+func (q *Queries) AddFundraiseProgressAmount(ctx context.Context, arg AddFundraiseProgressAmountParams) (Fundraise, error) {
+	row := q.db.QueryRowContext(ctx, addFundraiseProgressAmount, arg.Amount, arg.ID)
+	var i Fundraise
+	err := row.Scan(
+		&i.ID,
+		&i.ProductID,
+		&i.TargetAmount,
+		&i.ProgressAmount,
+		&i.Success,
+		&i.StartDate,
+		&i.EndDate,
+	)
+	return i, err
+}
+
 const createFundraise = `-- name: CreateFundraise :one
 INSERT INTO fundraise (
 	product_id,
@@ -69,11 +96,38 @@ func (q *Queries) ExitFundraise(ctx context.Context, arg ExitFundraiseParams) (F
 
 const getFundraise = `-- name: GetFundraise :one
 SELECT id, product_id, target_amount, progress_amount, success, start_date, end_date FROM fundraise
-WHERE product_id = $1 LIMIT 1
+WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetFundraise(ctx context.Context, productID int64) (Fundraise, error) {
-	row := q.db.QueryRowContext(ctx, getFundraise, productID)
+func (q *Queries) GetFundraise(ctx context.Context, id int64) (Fundraise, error) {
+	row := q.db.QueryRowContext(ctx, getFundraise, id)
+	var i Fundraise
+	err := row.Scan(
+		&i.ID,
+		&i.ProductID,
+		&i.TargetAmount,
+		&i.ProgressAmount,
+		&i.Success,
+		&i.StartDate,
+		&i.EndDate,
+	)
+	return i, err
+}
+
+const updateFundraiseProgressAmount = `-- name: UpdateFundraiseProgressAmount :one
+UPDATE fundraise
+SET progress_amount = $2
+WHERE id = $1
+RETURNING id, product_id, target_amount, progress_amount, success, start_date, end_date
+`
+
+type UpdateFundraiseProgressAmountParams struct {
+	ID             int64 `json:"id"`
+	ProgressAmount int64 `json:"progress_amount"`
+}
+
+func (q *Queries) UpdateFundraiseProgressAmount(ctx context.Context, arg UpdateFundraiseProgressAmountParams) (Fundraise, error) {
+	row := q.db.QueryRowContext(ctx, updateFundraiseProgressAmount, arg.ID, arg.ProgressAmount)
 	var i Fundraise
 	err := row.Scan(
 		&i.ID,

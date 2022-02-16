@@ -9,7 +9,19 @@ INSERT INTO fundraise (
 
 -- name: GetFundraise :one
 SELECT * FROM fundraise
-WHERE product_id = $1 LIMIT 1;
+WHERE id = $1 LIMIT 1;
+
+-- name: UpdateFundraiseProgressAmount :one
+UPDATE fundraise
+SET progress_amount = $2
+WHERE id = $1
+RETURNING *;
+
+-- name: AddFundraiseProgressAmount :one
+UPDATE fundraise
+SET progress_amount = progress_amount + sqlc.arg(amount)
+WHERE id = sqlc.arg(id)
+RETURNING *;
 
 -- name: ExitFundraise :one
 UPDATE fundraise
