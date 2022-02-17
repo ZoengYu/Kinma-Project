@@ -24,4 +24,7 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHOMY: postgres createdb migrateup migratedown sqlc test
+server:
+	go run main.go
+
+.PHOMY: postgres createdb migrateup migratedown sqlc test server 

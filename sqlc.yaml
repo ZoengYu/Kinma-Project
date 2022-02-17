@@ -11,3 +11,7 @@ packages:
     emit_interface: false
     #sqlc will singularize the table name to use as model struct name, accounts -> account
     emit_exact_table_names: false
+
+    #set emit_empty_slices will allow :many queries be empty instead of nil
+    #which means "var items []Account" turn to "items := []Account{}" to initialize
+    emit_empty_slices: true

@@ -3,13 +3,6 @@
 
 This branch use **Golang** as backend server, AngularJS as frontend UI
 
-before you launch the sevice, please make sure the required package is satisfied
-  ```
-  github.com/lib/pq
-  github.com/stretchr/testify
-  brew install sqlc
-  brew install golang-migrate
-  ```
   #
 create database migration schema
 ```
@@ -27,7 +20,10 @@ make migrateup
 ```
 make migratedown
 ```
-
+- Launch the API Server
+```
+make server
+```
 
 
 
