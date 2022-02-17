@@ -1,7 +1,14 @@
 # Kinma-Project
 *Kinma Project is design for product fundraising platform.*
 
-This branch use **Golang** as backend server, AngularJS as frontend UI
+Using **Golang** as a backend server, AngularJS as a frontend UI
+
+
+
+##temp
+
+main branch using Django as a Backend Server for now, we create a new branch for it
+
 
 
 # Integration with AWS
