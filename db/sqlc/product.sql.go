@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createProduct = `-- name: CreateProduct :one
@@ -123,17 +122,16 @@ func (q *Queries) ListProduct(ctx context.Context, arg ListProductParams) ([]Pro
 
 const updateProductDetail = `-- name: UpdateProductDetail :one
 UPDATE product
-SET title = $2, content = $3, product_tag = $4, last_update = $5
+SET title = $2, content = $3, product_tag = $4, last_update = now()
 WHERE id = $1
 RETURNING id, account_id, title, content, product_tag, created_at, last_update
 `
 
 type UpdateProductDetailParams struct {
-	ID         int64        `json:"id"`
-	Title      string       `json:"title"`
-	Content    string       `json:"content"`
-	ProductTag string       `json:"product_tag"`
-	LastUpdate sql.NullTime `json:"last_update"`
+	ID         int64  `json:"id"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	ProductTag string `json:"product_tag"`
 }
 
 func (q *Queries) UpdateProductDetail(ctx context.Context, arg UpdateProductDetailParams) (Product, error) {
@@ -142,7 +140,6 @@ func (q *Queries) UpdateProductDetail(ctx context.Context, arg UpdateProductDeta
 		arg.Title,
 		arg.Content,
 		arg.ProductTag,
-		arg.LastUpdate,
 	)
 	var i Product
 	err := row.Scan(

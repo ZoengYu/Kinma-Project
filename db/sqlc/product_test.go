@@ -91,17 +91,11 @@ func TestUpdateProduct(t *testing.T) {
 	account := createRandomAccount(t)
 	product1 := createRandomProduct(t, account)
 
-	nowTime := sql.NullTime {
-		Time: time.Now().UTC(),
-		Valid: true,
-	}
-
 	arg := UpdateProductDetailParams{
 		ID					:		product1.ID,
 		Title 			:	 	util.RandomString(5),
 		Content 		:		util.RandomString(20) + "_Content",
 		ProductTag	: 	util.RandomTag(),
-		LastUpdate	:		nowTime,
 	}
 
 	updateProduct1, err := testQueries.UpdateProductDetail(context.Background(), arg)
@@ -111,5 +105,5 @@ func TestUpdateProduct(t *testing.T) {
 	require.Equal(t, updateProduct1.Title, arg.Title)
 	require.Equal(t, updateProduct1.Content, arg.Content)
 	require.Equal(t, updateProduct1.ProductTag, arg.ProductTag)
-	require.Equal(t, updateProduct1.LastUpdate, arg.LastUpdate)
+	require.NotEmpty(t, updateProduct1.LastUpdate)
 }

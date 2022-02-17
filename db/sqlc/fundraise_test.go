@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
@@ -59,10 +58,6 @@ func TestExitFundraise(t *testing.T){
 	product1 := createRandomProduct(t, account1)
 	fundraise1 := createRandomFundraise(t, product1)
 
-	endTime := sql.NullTime {
-		Time: time.Now().UTC(),
-		Valid: true,
-	}
 	//fundraise Success
 	if (fundraise1.TargetAmount < fundraise1.ProgressAmount){
 		fundraise1.Success = true
@@ -70,9 +65,8 @@ func TestExitFundraise(t *testing.T){
 	arg := ExitFundraiseParams{
 		ProductID 	: fundraise1.ProductID,
 		Success			: fundraise1.Success,
-		EndDate			: endTime,
 	}
-
+	
 	endFundraise, err := testQueries.ExitFundraise(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, endFundraise)
@@ -80,9 +74,10 @@ func TestExitFundraise(t *testing.T){
 	fundraise2, err := testQueries.GetFundraise(context.Background(), endFundraise.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise2)
-	require.Equal(t, endFundraise.EndDate, fundraise2.EndDate)
 	require.Equal(t, endFundraise.ID, fundraise2.ID)
 	require.Equal(t, endFundraise.Success, fundraise2.Success)
+
+	require.NotEmpty(t, endFundraise.EndDate)
 }
 
 func TestUpdateFundraise(t *testing.T){

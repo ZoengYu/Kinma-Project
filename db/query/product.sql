@@ -21,7 +21,7 @@ OFFSET $3;
 
 -- name: UpdateProductDetail :one
 UPDATE product
-SET title = $2, content = $3, product_tag = $4, last_update = $5
+SET title = $2, content = $3, product_tag = $4, last_update = now()
 WHERE id = $1
 RETURNING *;
 

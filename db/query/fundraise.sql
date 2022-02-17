@@ -25,6 +25,6 @@ RETURNING *;
 
 -- name: ExitFundraise :one
 UPDATE fundraise
-SET success = $2, end_date = $3
+SET success = $2, end_date = now()
 WHERE product_id = $1
 RETURNING *;

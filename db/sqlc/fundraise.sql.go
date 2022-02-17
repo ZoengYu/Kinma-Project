@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const addFundraiseProgressAmount = `-- name: AddFundraiseProgressAmount :one
@@ -68,19 +67,18 @@ func (q *Queries) CreateFundraise(ctx context.Context, arg CreateFundraiseParams
 
 const exitFundraise = `-- name: ExitFundraise :one
 UPDATE fundraise
-SET success = $2, end_date = $3
+SET success = $2, end_date = now()
 WHERE product_id = $1
 RETURNING id, product_id, target_amount, progress_amount, success, start_date, end_date
 `
 
 type ExitFundraiseParams struct {
-	ProductID int64        `json:"product_id"`
-	Success   bool         `json:"success"`
-	EndDate   sql.NullTime `json:"end_date"`
+	ProductID int64 `json:"product_id"`
+	Success   bool  `json:"success"`
 }
 
 func (q *Queries) ExitFundraise(ctx context.Context, arg ExitFundraiseParams) (Fundraise, error) {
-	row := q.db.QueryRowContext(ctx, exitFundraise, arg.ProductID, arg.Success, arg.EndDate)
+	row := q.db.QueryRowContext(ctx, exitFundraise, arg.ProductID, arg.Success)
 	var i Fundraise
 	err := row.Scan(
 		&i.ID,
