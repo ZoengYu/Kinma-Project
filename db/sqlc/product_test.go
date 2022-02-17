@@ -111,5 +111,5 @@ func TestUpdateProduct(t *testing.T) {
 	require.Equal(t, updateProduct1.Title, arg.Title)
 	require.Equal(t, updateProduct1.Content, arg.Content)
 	require.Equal(t, updateProduct1.ProductTag, arg.ProductTag)
-	require.Equal(t, updateProduct1.LastUpdate, nowTime)
+	require.Equal(t, updateProduct1.LastUpdate, arg.LastUpdate)
 }
