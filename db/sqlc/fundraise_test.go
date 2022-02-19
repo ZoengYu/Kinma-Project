@@ -96,3 +96,20 @@ func TestUpdateFundraise(t *testing.T){
 	require.Equal(t, arg.ID, updatedFundraise.ID)
 	require.Equal(t, arg.ProgressAmount, updatedFundraise.ProgressAmount)
 }
+
+func TestAddFundraiseProgressAmount(t *testing.T){
+	account1 := createRandomAccount(t)
+	product1 := createRandomProduct(t, account1)
+	fundraise1 := createRandomFundraise(t, product1)
+
+	arg := AddFundraiseProgressAmountParams{
+		ID		: fundraise1.ID,
+		Amount: util.RandomInt(0,1000),
+	}
+
+	updatedFundraise, err := testQueries.AddFundraiseProgressAmount(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, updatedFundraise)
+	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount + arg.Amount)
+	require.Equal(t, arg.ID, updatedFundraise.ID)
+}

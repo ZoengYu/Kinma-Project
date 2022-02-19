@@ -15,7 +15,6 @@ func TestTransfer(t *testing.T){
 	account2 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account2)
 	fundraise1 := createRandomFundraise(t, product1)
-	fmt.Println(">> before:", fundraise1.ProgressAmount)
 	//concurrent transfer transactions
 	n := 5
 	amount := int64(10)
@@ -77,7 +76,6 @@ func TestTransfer(t *testing.T){
 
 	//check final update of fundraise amount
 	updatedFundraise, err := store.GetFundraise(context.Background(), fundraise1.ID)
-	fmt.Println(">> after:", updatedFundraise.ProgressAmount)
 	require.NoError(t, err)
 	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount + amount * int64(n))
 }

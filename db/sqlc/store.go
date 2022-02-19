@@ -57,7 +57,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 	err := store.execTx(ctx, func(q *Queries) error{
 		var err error
 		//create transfer record
-		fmt.Println("CreateTransfer")
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID	: arg.FromeAccountID,
 			ToFundraiseID	: arg.ToFundraiseID,
@@ -67,7 +66,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 			return err
 		}
 		//add Amount to fundraise project
-		fmt.Println("addMoney")
 		result.Fundraise, err = q.AddFundraiseProgressAmount(ctx, AddFundraiseProgressAmountParams{
 			Amount	: arg.Amount,
 			ID			: arg.ToFundraiseID,
