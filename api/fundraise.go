@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,8 +25,8 @@ func (server *Server) createFundraise(ctx *gin.Context){
 	}
 
 	arg := db.CreateFundraiseParams{
-		ProductID: req.ProductID,
-		TargetAmount: req.TargetAmount,
+		ProductID: 			req.ProductID,
+		TargetAmount: 	req.TargetAmount,
 		ProgressAmount: req.ProgressAmount,
 	}
 	//Implement the DB CRUD
@@ -66,8 +67,9 @@ func (server *Server) getFundraise(ctx *gin.Context){
 }
 
 type exitFundraiseRequest struct {
-	ProductID int64 `json:"product_id" binding:"required,min=1"`
-	Success   *bool `json:"success" binding:"required"`
+	// pointer here to allow user type false as input 
+	ID int64 `json:"id" binding:"required,min=1"`
+	Success   *bool `json:"success"`
 }
 
 func (server *Server) exitFundraise(ctx *gin.Context){
@@ -76,9 +78,33 @@ func (server *Server) exitFundraise(ctx *gin.Context){
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	//check if fundraise exist
+	fundraise, err := server.store.GetFundraise(ctx, req.ID)
+	if err != nil{
+		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	//init success as false
+	success := new(bool)
+	fmt.Println(*success,fundraise.TargetAmount, fundraise.ProgressAmount)
+	//pointer has to point to something, assign value to another address
+	if (fundraise.TargetAmount < fundraise.ProgressAmount){
+		//assign value to the success pointer
+		*success = true
+		req.Success = success
+		fmt.Println("pass")
+	} else {
+		req.Success = success
+		fmt.Println("not pass")
+	}
 
 	arg := db.ExitFundraiseParams{
-		ProductID	: req.ProductID,
+		ID	: req.ID,
 		Success		: *req.Success,
 	}
 

@@ -27,7 +27,8 @@ func NewServer(store *db.Store) *Server{
 	router.POST("/fundraise", server.createFundraise)
 	router.GET("/fundraise/:id", server.getFundraise)
 	router.PUT("/exitfundraise", server.exitFundraise)
-	router.PUT("/addfundaiseamount", server.addFundraise)
+
+	router.POST("/transfer", server.createTransfer)
 	
 	server.router = router
 	return server

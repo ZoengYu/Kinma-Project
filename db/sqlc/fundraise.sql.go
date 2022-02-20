@@ -68,17 +68,17 @@ func (q *Queries) CreateFundraise(ctx context.Context, arg CreateFundraiseParams
 const exitFundraise = `-- name: ExitFundraise :one
 UPDATE fundraise
 SET success = $2, end_date = now()
-WHERE product_id = $1
+WHERE id = $1
 RETURNING id, product_id, target_amount, progress_amount, success, start_date, end_date
 `
 
 type ExitFundraiseParams struct {
-	ProductID int64 `json:"product_id"`
-	Success   bool  `json:"success"`
+	ID      int64 `json:"id"`
+	Success bool  `json:"success"`
 }
 
 func (q *Queries) ExitFundraise(ctx context.Context, arg ExitFundraiseParams) (Fundraise, error) {
-	row := q.db.QueryRowContext(ctx, exitFundraise, arg.ProductID, arg.Success)
+	row := q.db.QueryRowContext(ctx, exitFundraise, arg.ID, arg.Success)
 	var i Fundraise
 	err := row.Scan(
 		&i.ID,
@@ -115,17 +115,17 @@ func (q *Queries) GetFundraise(ctx context.Context, id int64) (Fundraise, error)
 const updateFundraiseProgressAmount = `-- name: UpdateFundraiseProgressAmount :one
 UPDATE fundraise
 SET progress_amount = $2
-WHERE id = $1
+WHERE product_id = $1
 RETURNING id, product_id, target_amount, progress_amount, success, start_date, end_date
 `
 
 type UpdateFundraiseProgressAmountParams struct {
-	ID             int64 `json:"id"`
+	ProductID      int64 `json:"product_id"`
 	ProgressAmount int64 `json:"progress_amount"`
 }
 
 func (q *Queries) UpdateFundraiseProgressAmount(ctx context.Context, arg UpdateFundraiseProgressAmountParams) (Fundraise, error) {
-	row := q.db.QueryRowContext(ctx, updateFundraiseProgressAmount, arg.ID, arg.ProgressAmount)
+	row := q.db.QueryRowContext(ctx, updateFundraiseProgressAmount, arg.ProductID, arg.ProgressAmount)
 	var i Fundraise
 	err := row.Scan(
 		&i.ID,

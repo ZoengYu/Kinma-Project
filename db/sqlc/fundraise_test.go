@@ -63,8 +63,8 @@ func TestExitFundraise(t *testing.T){
 		fundraise1.Success = true
 	}
 	arg := ExitFundraiseParams{
-		ProductID 	: fundraise1.ProductID,
-		Success			: fundraise1.Success,
+		ID 				: fundraise1.ID,
+		Success		: fundraise1.Success,
 	}
 	
 	endFundraise, err := testQueries.ExitFundraise(context.Background(), arg)
@@ -86,14 +86,14 @@ func TestUpdateFundraise(t *testing.T){
 	fundraise1 := createRandomFundraise(t, product1)
 	
 	arg := UpdateFundraiseProgressAmountParams{
-		ID						: fundraise1.ID,
+		ProductID			: fundraise1.ProductID,
 		ProgressAmount: util.RandomMoney(),
 	}
 
 	updatedFundraise, err := testQueries.UpdateFundraiseProgressAmount(context.Background(),arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, updatedFundraise)
-	require.Equal(t, arg.ID, updatedFundraise.ID)
+	require.Equal(t, arg.ProductID, updatedFundraise.ProductID)
 	require.Equal(t, arg.ProgressAmount, updatedFundraise.ProgressAmount)
 }
 

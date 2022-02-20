@@ -14,7 +14,7 @@ WHERE id = $1 LIMIT 1;
 -- name: UpdateFundraiseProgressAmount :one
 UPDATE fundraise
 SET progress_amount = $2
-WHERE id = $1
+WHERE product_id = $1
 RETURNING *;
 
 -- name: AddFundraiseProgressAmount :one
@@ -26,5 +26,5 @@ RETURNING *;
 -- name: ExitFundraise :one
 UPDATE fundraise
 SET success = $2, end_date = now()
-WHERE product_id = $1
+WHERE id = $1
 RETURNING *;

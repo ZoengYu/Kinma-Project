@@ -39,15 +39,17 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 	return tx.Commit()
 }
 
+//Currency is a optional user input which will be verified during the transfer
 type TransferParams struct {
-	FromeAccountID int64 `json:"from_account_id"`
-	ToFundraiseID  int64 `json:"to_fundraise_id"`
-	Amount				 int64 `json:"amount"`
+	FromAccountID 	int64 	`json:"from_account_id"`
+	ToFundraiseID  	int64 	`json:"to_fundraise_id"`
+	Amount					int64 	`json:"amount"`
+	Currency				string	`json:"currency"`
 }
 
 type TransferTxResult struct {
 	Transfer 				Transfer 	`json:"transfer"`
-	FromeAccount		Account  	`json:"from_account"`
+	FromAccountID		Account  	`json:"from_account"`
 	Fundraise  			Fundraise `json:"to_fundraise"`
 }
 
@@ -56,9 +58,19 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 	var result TransferTxResult
 	err := store.execTx(ctx, func(q *Queries) error{
 		var err error
+		//check if account exist
+		result.FromAccountID, err = q.GetAccount(ctx, arg.FromAccountID)
+		if err != nil{
+			return err
+		}
+		//check if fundraise exist
+		getFundraise, err := q.GetFundraise(ctx, arg.ToFundraiseID)
+		if err != nil{
+			return err
+		}
 		//create transfer record
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
-			FromAccountID	: arg.FromeAccountID,
+			FromAccountID	: arg.FromAccountID,
 			ToFundraiseID	: arg.ToFundraiseID,
 			Amount				: arg.Amount,
 		})
@@ -73,13 +85,17 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 		if err != nil{
 			return err
 		}
-
-		result.FromeAccount, err = q.GetAccount(ctx, arg.FromeAccountID)
-		if err != nil{
-			return err
+		//update transfer if is successed
+		if (result.Fundraise.ProgressAmount == getFundraise.ProgressAmount + result.Transfer.Amount){
+			result.Transfer, err = q.TransferSuccess(ctx, TransferSuccessParams{
+				result.Transfer.ID, true})
+				if err != nil{
+					return err
+				}
 		}
 
 		return nil
 	})
+
 	return result, err
 }
