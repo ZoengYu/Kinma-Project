@@ -1,4 +1,5 @@
+ALTER TABLE IF EXISTS "transfers" DROP CONSTRAINT IF EXISTS "to_fundraise_id";
+
+ALTER TABLE IF EXISTS "transfers" DROP CONSTRAINT IF EXISTS "from_account_id";
+
 DROP TABLE IF EXISTS transfers;
-DROP TABLE IF EXISTS fundraise;
-DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS account;

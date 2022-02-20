@@ -10,12 +10,19 @@ dropdb:
 migrateup:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" -verbose up
 
+migrateup1:
+	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" -verbose up 1
+
 migratedown:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" -verbose down
 
+#only rollback 1 last migration
+migratedown1:
+	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" -verbose down 1
+
 #forcely migrate back to the specific version
 migrateforce:
-	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" force 2
+	migrate -path db/migration -database "postgresql://root:password@localhost:5432/kinma_db?sslmode=disable" force 3
 
 sqlc:
 	sqlc generate
@@ -27,4 +34,4 @@ test:
 server:
 	go run main.go
 
-.PHOMY: postgres createdb migrateup migratedown sqlc test server 
+.PHOMY: postgres createdb migrateup migrateup1 migratedown migratedown1 sqlc test server 
