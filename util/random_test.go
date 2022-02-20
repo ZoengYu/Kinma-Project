@@ -18,14 +18,6 @@ func TestRandomOwner(t *testing.T){
 	require.NotEqual(t, owner1, owner2)
 }
 
-//It's possible the currency1-3 is equal since the current option only have 3
-// func TestRandomCurrency(t *testing.T){
-// 	currency1 := RandomCurrency()
-// 	currency2 := RandomCurrency()
-// 	currency3 := RandomCurrency()
-// 	require.NotEqual(t, currency1, currency2, currency3)
-// }
-
 func TestRandomTag(t *testing.T){
 	tag1 := RandomTag()
 	tag2 := RandomTag()
@@ -37,4 +29,10 @@ func TestRandomMoney(t *testing.T){
 	money1 := RandomInt(0,1000)
 	money2 := RandomInt(0,1000)
 	require.NotEqual(t, money1, money2)
+}
+
+func TestRandomCurrency(t *testing.T){
+	currencies := []string{"TWD","USD","CNY"}
+	currency1 := RandomCurrency()
+	require.Contains(t, currencies, currency1)
 }

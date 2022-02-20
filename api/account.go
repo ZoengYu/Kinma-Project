@@ -10,7 +10,7 @@ import (
 
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=TWD USD CNY"`
+	Currency string `json:"currency" binding:"required,currency"`
 }
 
 // Server expose method for API

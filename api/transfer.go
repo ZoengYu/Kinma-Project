@@ -14,7 +14,7 @@ type transferRequest struct {
 	FromAccountID int64 	`json:"from_account_id" binding:"required,min=1"`
 	ToFundraiseID int64 	`json:"to_fundraise_id" binding:"required,min=1"`
 	Amount 				int64 	`json:"amount" binding:"required,gt=0"`
-	Currency			string	`json:"currency" binding:"required,oneof=USD EUR CNY"`
+	Currency			string	`json:"currency" binding:"required,currency"`
 }
 
 // Server expose method for API
