@@ -26,8 +26,8 @@ func TestRandomTag(t *testing.T){
 }
 
 func TestRandomMoney(t *testing.T){
-	money1 := RandomInt(0,1000)
-	money2 := RandomInt(0,1000)
+	money1 := RandomMoney()
+	money2 := RandomMoney()
 	require.NotEqual(t, money1, money2)
 }
 
@@ -35,4 +35,12 @@ func TestRandomCurrency(t *testing.T){
 	currencies := []string{"TWD","USD","CNY"}
 	currency1 := RandomCurrency()
 	require.Contains(t, currencies, currency1)
+}
+
+func TestRandomEmail(t *testing.T){
+	emailType := "@email.com"
+	email1 := RandomEmail()
+	email2 := RandomEmail()
+	require.Contains(t, email1, emailType)
+	require.Contains(t, email2, emailType)
 }
