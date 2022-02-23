@@ -46,20 +46,22 @@ func (server *Server) setupRouter() {
 		router.POST("/users", server.createUser)
 		router.POST("/users/login", server.loginUser)
 		
-		router.POST("/accounts", server.createAccount)
-		router.GET("/accounts/:id", server.getAccount)
-		router.GET("/accounts", server.listAccount)
+		authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
+		authRoutes.POST("/accounts", server.createAccount)
+		authRoutes.GET("/accounts/:id", server.getAccount)
+		authRoutes.GET("/accounts", server.listAccount)
+		
+		authRoutes.POST("/products", server.createProduct)
+		authRoutes.GET("/products/:id", server.getProduct)
+		authRoutes.GET("/products", server.listProduct)
+		authRoutes.PUT("/updateproduct/:id", server.updateProduct)
 	
-		router.POST("/products", server.createProduct)
-		router.GET("/products/:id", server.getProduct)
-		router.GET("/products", server.listProduct)
-		router.PUT("/updateproduct/:id", server.updateProduct)
+		authRoutes.POST("/fundraise", server.createFundraise)
+		authRoutes.GET("/fundraise/:id", server.getFundraise)
+		authRoutes.PUT("/exitfundraise", server.exitFundraise)
 	
-		router.POST("/fundraise", server.createFundraise)
-		router.GET("/fundraise/:id", server.getFundraise)
-		router.PUT("/exitfundraise", server.exitFundraise)
-	
-		router.POST("/transfer", server.createTransfer)
+		authRoutes.POST("/transfer", server.createTransfer)
 		server.router = router
 }
 // Start runs the HTTP server on a specific address.

@@ -2,11 +2,13 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/kinmaBackend/db/sqlc"
+	"github.com/kinmaBackend/token"
 )
 
 
@@ -25,8 +27,34 @@ func (server *Server) createTransfer(ctx *gin.Context){
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	//vaild if the account currency is match
-	if !server.validAccount(ctx, req.FromAccountID, req.Currency){
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
+	if !valid{
+		return
+	}
+
+	if fromAccount.Owner != authPayload.Username{
+		err := errors.New("account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+	
+	//check if fundraise was over
+	targetFundraise, err := server.store.GetFundraise(ctx, req.ToFundraiseID)
+	if err != nil {
+		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusBadRequest, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	if targetFundraise.Success{
+		err := errors.New("fundraise project already over, thank you for the support")
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -50,24 +78,24 @@ func (server *Server) createTransfer(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) bool{
+func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
 	account, err :=server.store.GetAccount(ctx, accountID)
 	if err != nil {
 		if err == sql.ErrNoRows{
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return false
+			return account, false
 		}
 		
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return false
+		return account, false
 	}
 
 	if account.Currency != currency{
 		err := fmt.Errorf("account [%d] currency mismatch: %s vs %s", accountID, account.Currency, currency)
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return false
+		return account, false
 	}
 
-	return true
+	return account, true
 
 }
