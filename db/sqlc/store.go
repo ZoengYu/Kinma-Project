@@ -42,7 +42,7 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 //Currency is a optional user input which will be verified during the transfer
 type TransferParams struct {
 	FromAccountID 	int64 	`json:"from_account_id"`
-	ToFundraiseID  	int64 	`json:"to_fundraise_id"`
+	ToProductID  		int64 	`json:"to_product_id"`
 	Amount					int64 	`json:"amount"`
 	Currency				string	`json:"currency"`
 }
@@ -64,14 +64,14 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 			return err
 		}
 		//check if fundraise exist
-		getFundraise, err := q.GetFundraise(ctx, arg.ToFundraiseID)
+		getFundraise, err := q.GetProductFundraise(ctx, arg.ToProductID)
 		if err != nil{
 			return err
 		}
 		//create transfer record
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID	: arg.FromAccountID,
-			ToFundraiseID	: arg.ToFundraiseID,
+			ToProductID		: arg.ToProductID,
 			Amount				: arg.Amount,
 		})
 		if err != nil {
@@ -80,14 +80,14 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 		//add Amount to fundraise project
 		result.Fundraise, err = q.AddFundraiseProgressAmount(ctx, AddFundraiseProgressAmountParams{
 			Amount	: arg.Amount,
-			ID			: arg.ToFundraiseID,
+			ID			: arg.ToProductID,
 		})
 		if err != nil{
 			return err
 		}
 		//update transfer if is successed
 		if (result.Fundraise.ProgressAmount == getFundraise.ProgressAmount + result.Transfer.Amount){
-			result.Transfer, err = q.TransferSuccess(ctx, TransferSuccessParams{
+			result.Transfer, err = q.UpdateTransferSuccess(ctx, UpdateTransferSuccessParams{
 				result.Transfer.ID, true})
 				if err != nil{
 					return err

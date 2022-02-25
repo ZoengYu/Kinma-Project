@@ -31,7 +31,7 @@ type Product struct {
 	AccountID  int64        `json:"account_id"`
 	Title      string       `json:"title"`
 	Content    string       `json:"content"`
-	ProductTag string       `json:"product_tag"`
+	ProductTag []string     `json:"product_tag"`
 	CreatedAt  time.Time    `json:"created_at"`
 	LastUpdate sql.NullTime `json:"last_update"`
 }
@@ -39,7 +39,7 @@ type Product struct {
 type Transfer struct {
 	ID            int64 `json:"id"`
 	FromAccountID int64 `json:"from_account_id"`
-	ToFundraiseID int64 `json:"to_fundraise_id"`
+	ToProductID   int64 `json:"to_product_id"`
 	// must be positive
 	Amount    int64     `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`

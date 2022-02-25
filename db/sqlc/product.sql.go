@@ -5,6 +5,8 @@ package db
 
 import (
 	"context"
+
+	"github.com/lib/pq"
 )
 
 const createProduct = `-- name: CreateProduct :one
@@ -19,10 +21,10 @@ INSERT INTO product (
 `
 
 type CreateProductParams struct {
-	AccountID  int64  `json:"account_id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	ProductTag string `json:"product_tag"`
+	AccountID  int64    `json:"account_id"`
+	Title      string   `json:"title"`
+	Content    string   `json:"content"`
+	ProductTag []string `json:"product_tag"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -30,7 +32,7 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		arg.AccountID,
 		arg.Title,
 		arg.Content,
-		arg.ProductTag,
+		pq.Array(arg.ProductTag),
 	)
 	var i Product
 	err := row.Scan(
@@ -38,44 +40,44 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		&i.AccountID,
 		&i.Title,
 		&i.Content,
-		&i.ProductTag,
+		pq.Array(&i.ProductTag),
 		&i.CreatedAt,
 		&i.LastUpdate,
 	)
 	return i, err
 }
 
-const deleteProduct = `-- name: DeleteProduct :exec
+const deleteAccountProduct = `-- name: DeleteAccountProduct :exec
 DELETE FROM product
 WHERE id = $1
 `
 
-func (q *Queries) DeleteProduct(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deleteProduct, id)
+func (q *Queries) DeleteAccountProduct(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteAccountProduct, id)
 	return err
 }
 
-const getProduct = `-- name: GetProduct :one
+const getAccountProduct = `-- name: GetAccountProduct :one
 SELECT id, account_id, title, content, product_tag, created_at, last_update FROM product
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
-	row := q.db.QueryRowContext(ctx, getProduct, id)
+func (q *Queries) GetAccountProduct(ctx context.Context, id int64) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getAccountProduct, id)
 	var i Product
 	err := row.Scan(
 		&i.ID,
 		&i.AccountID,
 		&i.Title,
 		&i.Content,
-		&i.ProductTag,
+		pq.Array(&i.ProductTag),
 		&i.CreatedAt,
 		&i.LastUpdate,
 	)
 	return i, err
 }
 
-const listProduct = `-- name: ListProduct :many
+const listMyProduct = `-- name: ListMyProduct :many
 SELECT id, account_id, title, content, product_tag, created_at, last_update FROM product
 WHERE account_id = $1
 ORDER BY id
@@ -83,14 +85,14 @@ LIMIT $2
 OFFSET $3
 `
 
-type ListProductParams struct {
+type ListMyProductParams struct {
 	AccountID int64 `json:"account_id"`
 	Limit     int32 `json:"limit"`
 	Offset    int32 `json:"offset"`
 }
 
-func (q *Queries) ListProduct(ctx context.Context, arg ListProductParams) ([]Product, error) {
-	rows, err := q.db.QueryContext(ctx, listProduct, arg.AccountID, arg.Limit, arg.Offset)
+func (q *Queries) ListMyProduct(ctx context.Context, arg ListMyProductParams) ([]Product, error) {
+	rows, err := q.db.QueryContext(ctx, listMyProduct, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +105,7 @@ func (q *Queries) ListProduct(ctx context.Context, arg ListProductParams) ([]Pro
 			&i.AccountID,
 			&i.Title,
 			&i.Content,
-			&i.ProductTag,
+			pq.Array(&i.ProductTag),
 			&i.CreatedAt,
 			&i.LastUpdate,
 		); err != nil {
@@ -128,10 +130,10 @@ RETURNING id, account_id, title, content, product_tag, created_at, last_update
 `
 
 type UpdateProductDetailParams struct {
-	ID         int64  `json:"id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	ProductTag string `json:"product_tag"`
+	ID         int64    `json:"id"`
+	Title      string   `json:"title"`
+	Content    string   `json:"content"`
+	ProductTag []string `json:"product_tag"`
 }
 
 func (q *Queries) UpdateProductDetail(ctx context.Context, arg UpdateProductDetailParams) (Product, error) {
@@ -139,7 +141,7 @@ func (q *Queries) UpdateProductDetail(ctx context.Context, arg UpdateProductDeta
 		arg.ID,
 		arg.Title,
 		arg.Content,
-		arg.ProductTag,
+		pq.Array(arg.ProductTag),
 	)
 	var i Product
 	err := row.Scan(
@@ -147,7 +149,7 @@ func (q *Queries) UpdateProductDetail(ctx context.Context, arg UpdateProductDeta
 		&i.AccountID,
 		&i.Title,
 		&i.Content,
-		&i.ProductTag,
+		pq.Array(&i.ProductTag),
 		&i.CreatedAt,
 		&i.LastUpdate,
 	)

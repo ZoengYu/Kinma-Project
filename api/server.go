@@ -51,15 +51,15 @@ func (server *Server) setupRouter() {
 		authRoutes.POST("/accounts", server.createAccount)
 		authRoutes.GET("/accounts/:id", server.getAccount)
 		authRoutes.GET("/accounts", server.listAccount)
-		
-		authRoutes.POST("/products", server.createProduct)
-		authRoutes.GET("/products/:id", server.getProduct)
-		authRoutes.GET("/products", server.listProduct)
-		authRoutes.PUT("/updateproduct/:id", server.updateProduct)
-	
-		authRoutes.POST("/fundraise", server.createFundraise)
-		authRoutes.GET("/fundraise/:id", server.getFundraise)
-		authRoutes.PUT("/exitfundraise", server.exitFundraise)
+
+		authRoutes.GET("/myproducts/:id", server.getProduct)
+		authRoutes.GET("/myproducts", server.listMyProduct)
+		authRoutes.POST("/myproducts", server.createProduct)
+		authRoutes.PUT("/myproduct/:product_id", server.updateProduct)
+
+		authRoutes.GET("/myproduct/:product_id/fundraise", server.getFundraise)
+		authRoutes.POST("/myproduct/:product_id/fundraise", server.createFundraise)
+		authRoutes.PUT("myproduct/:product_id/exitfundraise", server.exitFundraise)
 	
 		authRoutes.POST("/transfer", server.createTransfer)
 		server.router = router

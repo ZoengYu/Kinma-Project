@@ -11,7 +11,7 @@ import (
 func createRandomTransfer(t *testing.T, FromAccount Account, ToFundraise Fundraise) Transfer {
 	arg := CreateTransferParams{
 		FromAccountID	: FromAccount.ID,
-		ToFundraiseID	: ToFundraise.ID,
+		ToProductID		: ToFundraise.ProductID,
 		Amount				: util.RandomMoney(),
 	}
 
@@ -20,7 +20,7 @@ func createRandomTransfer(t *testing.T, FromAccount Account, ToFundraise Fundrai
 	require.NotEmpty(t, transfer)
 
 	require.Equal(t, arg.FromAccountID, transfer.FromAccountID)
-	require.Equal(t, arg.ToFundraiseID, transfer.ToFundraiseID)
+	require.Equal(t, arg.ToProductID, transfer.ToProductID)
 	require.Equal(t, arg.Amount, transfer.Amount)
 
 	require.NotZero(t, transfer.ID)
@@ -49,13 +49,13 @@ func TestGetTransfer(t *testing.T) {
 	createdTransfer := createRandomTransfer(t, account1, fundraise1)
 
 	getTransfer, err := testQueries.GetTransfer(context.Background(), GetTransferParams{
-		FromAccountID: account1.ID,
-		ToFundraiseID: fundraise1.ID,
+		FromAccountID	: account1.ID,
+		ToProductID		: fundraise1.ProductID,
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, getTransfer)
 	require.Equal(t, getTransfer.FromAccountID, createdTransfer.FromAccountID)
-	require.Equal(t, getTransfer.ToFundraiseID, createdTransfer.ToFundraiseID)
+	require.Equal(t, getTransfer.ToProductID, createdTransfer.ToProductID)
 
 	require.Equal(t, getTransfer.ID, createdTransfer.ID)
 	require.Equal(t, getTransfer.Amount, createdTransfer.Amount)
@@ -70,16 +70,16 @@ func TestListTransfers(t *testing.T){
 
 	for i := 0; i < 10; i++ {
 		TransferArg := CreateTransferParams{
-			FromAccountID: product1.AccountID,
-			ToFundraiseID: fundraise1.ID,
-			Amount			 : util.RandomMoney(),
+			FromAccountID	: product1.AccountID,
+			ToProductID		: fundraise1.ProductID,
+			Amount			 	: util.RandomMoney(),
 		}
 		testQueries.CreateTransfer(context.Background(), TransferArg)
 	}
 
 	listArg := ListTransfersParams{
 		FromAccountID	: account1.ID,
-		ToFundraiseID	: fundraise1.ID,
+		ToProductID		: fundraise1.ProductID,
 		Limit					:	5,
 		Offset				: 5,
 	}

@@ -14,7 +14,7 @@ import (
 
 type transferRequest struct {
 	FromAccountID int64 	`json:"from_account_id" binding:"required,min=1"`
-	ToFundraiseID int64 	`json:"to_fundraise_id" binding:"required,min=1"`
+	ToProductID 	int64 	`json:"to_product_id" binding:"required,min=1"`
 	Amount 				int64 	`json:"amount" binding:"required,gt=0"`
 	Currency			string	`json:"currency" binding:"required,currency"`
 }
@@ -42,7 +42,7 @@ func (server *Server) createTransfer(ctx *gin.Context){
 	}
 	
 	//check if fundraise was over
-	targetFundraise, err := server.store.GetFundraise(ctx, req.ToFundraiseID)
+	targetFundraise, err := server.store.GetProductFundraise(ctx, req.ToProductID)
 	if err != nil {
 		if err == sql.ErrNoRows{
 			ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -60,7 +60,7 @@ func (server *Server) createTransfer(ctx *gin.Context){
 
 	arg := db.TransferParams{
 		FromAccountID		: req.FromAccountID,
-		ToFundraiseID		: req.ToFundraiseID,
+		ToProductID			: req.ToProductID,
 		Amount					: req.Amount,
 	}
 	//Implement the DB CRUD

@@ -10,7 +10,7 @@ CREATE TABLE "product" (
   "account_id" bigint NOT NULL,
   "title" varchar NOT NULL,
   "content" text NOT NULL,
-  "product_tag" varchar NOT NULL,
+  "product_tag" varchar[] NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "last_update" timestamptz
 );

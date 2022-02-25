@@ -8,11 +8,11 @@ INSERT INTO product (
   $1, $2, $3,$4
 ) RETURNING *;
 
--- name: GetProduct :one
+-- name: GetAccountProduct :one
 SELECT * FROM product
 WHERE id = $1 LIMIT 1;
 
--- name: ListProduct :many
+-- name: ListMyProduct :many
 SELECT * FROM product
 WHERE account_id = $1
 ORDER BY id
@@ -25,6 +25,6 @@ SET title = $2, content = $3, product_tag = $4, last_update = now()
 WHERE id = $1
 RETURNING *;
 
--- name: DeleteProduct :exec
+-- name: DeleteAccountProduct :exec
 DELETE FROM product
 WHERE id = $1;

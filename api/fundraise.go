@@ -8,24 +8,53 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/kinmaBackend/db/sqlc"
+	"github.com/kinmaBackend/token"
 )
 
-type CreateFundraiseParams struct {
-	ProductID      int64 `json:"product_id" binding:"required"`
+type createFundraiseProductIDParams struct {
+	ProductID  int64  `uri:"product_id" binding:"required,min=1"`
+}
+
+type createFundraiseParams struct {
+	AccountID			 int64 `json:"account_id" binding:"required"`
 	TargetAmount   int64 `json:"target_amount" binding:"required"`
 	ProgressAmount int64 `json:"progress_amount"`
 }
 
 // Server expose method for API
 func (server *Server) createFundraise(ctx *gin.Context){
-	var req CreateFundraiseParams
+	var req createFundraiseParams
+	var reqProductID createFundraiseProductIDParams
+
 	if err := ctx.ShouldBindJSON(&req); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
+	if err := ctx.ShouldBindUri(&reqProductID); err != nil{
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	account, err := server.store.GetAccount(ctx, req.AccountID)
+	if err != nil{
+		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if authPayload.Username != account.Owner {
+		err := errors.New("account doesn't belong to the authenicated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	arg := db.CreateFundraiseParams{
-		ProductID: 			req.ProductID,
+		ProductID: 			reqProductID.ProductID,
 		TargetAmount: 	req.TargetAmount,
 		ProgressAmount: req.ProgressAmount,
 	}
@@ -39,22 +68,23 @@ func (server *Server) createFundraise(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, fundraise)
 }
 
-type getFundraiseRequest struct {
-	ProductID  int64  `uri:"id" binding:"required,min=1"`
+type getFundraiseProductRequest struct {
+	ProductID  int64  `uri:"product_id" binding:"required,min=1"`
 }
 
 // Server expose method for API
 func (server *Server) getFundraise(ctx *gin.Context){
-	var req getFundraiseRequest
+	var req getFundraiseProductRequest
 	if err := ctx.ShouldBindUri(&req); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	//Implement the DB CRUD
-	fundraise, err := server.store.GetFundraise(ctx, req.ProductID)
+	fundraise, err := server.store.GetProductFundraise(ctx, req.ProductID)
 	if err != nil {
 		if err == sql.ErrNoRows{
+			err := errors.New("cannot find the fundraise of the product")
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
@@ -66,22 +96,52 @@ func (server *Server) getFundraise(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, fundraise)
 }
 
+type exitFundraiseProductIDRequest struct {
+	ProductID  int64  `uri:"product_id" binding:"required,min=1"`
+}
+
 type exitFundraiseRequest struct {
+	AccountID 		int64	`json:"account_id" binding:"required"`
 	// pointer here to allow user type false as input 
-	ID int64 `json:"id" binding:"required,min=1"`
-	Success   *bool `json:"success"`
+	Success   		*bool `json:"success"`
 }
 
 func (server *Server) exitFundraise(ctx *gin.Context){
 	var req exitFundraiseRequest
+	var reqProductID exitFundraiseProductIDRequest
+
 	if err := ctx.ShouldBindJSON(&req); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	//check if fundraise exist
-	fundraise, err := server.store.GetFundraise(ctx, req.ID)
+
+	if err := ctx.ShouldBindUri(&req); err != nil{
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	account, err := server.store.GetAccount(ctx, req.AccountID)
 	if err != nil{
 		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	if authPayload.Username != account.Owner {
+		err := errors.New("account doesn't belong to the authenicated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+	//check if fundraise exist
+	fundraise, err := server.store.GetProductFundraise(ctx, reqProductID.ProductID)
+	if err != nil{
+		if err == sql.ErrNoRows{
+			err := errors.New("cannot find the fundraise of product")
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
@@ -104,7 +164,7 @@ func (server *Server) exitFundraise(ctx *gin.Context){
 	}
 
 	arg := db.ExitFundraiseParams{
-		ID	: req.ID,
+		ProductID	: reqProductID.ProductID,
 		Success		: *req.Success,
 	}
 

@@ -29,7 +29,7 @@ func TestTransfer(t *testing.T){
 			//Transfer will include `createTransfer` Record and `addMoney` to product's fundraise
 			result, err := store.TransferTx(context.Background(), TransferParams{
 				FromAccountID		: account1.ID,
-				ToFundraiseID		: fundraise1.ID,
+				ToProductID			: fundraise1.ProductID,
 				Amount					: amount,
 			})
 
@@ -50,14 +50,14 @@ func TestTransfer(t *testing.T){
 
 		require.NotEmpty(t, transfer)
 		require.Equal(t, account1.ID, transfer.FromAccountID)
-		require.Equal(t, fundraise1.ID, transfer.ToFundraiseID)
+		require.Equal(t, fundraise1.ProductID, transfer.ToProductID)
 		require.Equal(t, amount, transfer.Amount)
 		require.NotZero(t, transfer.ID)
 		require.NotZero(t, transfer.CreatedAt)
 
 		transferSuccess, err := store.GetTransfer(context.Background(), GetTransferParams{
-			FromAccountID: account1.ID,
-			ToFundraiseID: fundraise1.ID,
+			FromAccountID	: account1.ID,
+			ToProductID		: fundraise1.ProductID,
 		})
 		require.NoError(t, err)
 
@@ -70,7 +70,7 @@ func TestTransfer(t *testing.T){
 		fmt.Print(result.Fundraise.ProgressAmount)
 
 		// check get fundraise is working well during the transaction
-		_, err = store.GetFundraise(context.Background(), transfer.ToFundraiseID)
+		_, err = store.GetProductFundraise(context.Background(), transfer.ToProductID)
 		require.NoError(t, err)
 
 		//check transfer is success
@@ -78,7 +78,7 @@ func TestTransfer(t *testing.T){
 	}
 
 	//check final update of fundraise amount
-	updatedFundraise, err := store.GetFundraise(context.Background(), fundraise1.ID)
+	updatedFundraise, err := store.GetProductFundraise(context.Background(), fundraise1.ProductID)
 	require.NoError(t, err)
 	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount + amount * int64(n))
 }

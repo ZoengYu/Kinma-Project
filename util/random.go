@@ -49,6 +49,14 @@ func RandomTag() string {
 	return tags[rand.Intn(n)]
 }
 
+func RandomTagList() []string{
+	var tagList []string
+	for i := 0; i < 3; i++{
+		tagList = append(tagList, RandomTag())
+	}
+	return tagList
+}
+
 func RandomMoney() int64 {
 	return RandomInt(0,1000)
 }

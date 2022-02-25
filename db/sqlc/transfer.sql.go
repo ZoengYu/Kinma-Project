@@ -10,26 +10,26 @@ import (
 const createTransfer = `-- name: CreateTransfer :one
 INSERT INTO transfers (
   from_account_id,
-  to_fundraise_id,
+  to_product_id,
   amount
 ) VALUES (
   $1, $2, $3
-) RETURNING id, from_account_id, to_fundraise_id, amount, created_at, success
+) RETURNING id, from_account_id, to_product_id, amount, created_at, success
 `
 
 type CreateTransferParams struct {
 	FromAccountID int64 `json:"from_account_id"`
-	ToFundraiseID int64 `json:"to_fundraise_id"`
+	ToProductID   int64 `json:"to_product_id"`
 	Amount        int64 `json:"amount"`
 }
 
 func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error) {
-	row := q.db.QueryRowContext(ctx, createTransfer, arg.FromAccountID, arg.ToFundraiseID, arg.Amount)
+	row := q.db.QueryRowContext(ctx, createTransfer, arg.FromAccountID, arg.ToProductID, arg.Amount)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,
 		&i.FromAccountID,
-		&i.ToFundraiseID,
+		&i.ToProductID,
 		&i.Amount,
 		&i.CreatedAt,
 		&i.Success,
@@ -38,24 +38,24 @@ func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) 
 }
 
 const getTransfer = `-- name: GetTransfer :one
-SELECT id, from_account_id, to_fundraise_id, amount, created_at, success FROM transfers
+SELECT id, from_account_id, to_product_id, amount, created_at, success FROM transfers
 WHERE 
-from_account_id = $1 OR to_fundraise_id = $2 
+from_account_id = $1 OR to_product_id = $2 
 LIMIT 1
 `
 
 type GetTransferParams struct {
 	FromAccountID int64 `json:"from_account_id"`
-	ToFundraiseID int64 `json:"to_fundraise_id"`
+	ToProductID   int64 `json:"to_product_id"`
 }
 
 func (q *Queries) GetTransfer(ctx context.Context, arg GetTransferParams) (Transfer, error) {
-	row := q.db.QueryRowContext(ctx, getTransfer, arg.FromAccountID, arg.ToFundraiseID)
+	row := q.db.QueryRowContext(ctx, getTransfer, arg.FromAccountID, arg.ToProductID)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,
 		&i.FromAccountID,
-		&i.ToFundraiseID,
+		&i.ToProductID,
 		&i.Amount,
 		&i.CreatedAt,
 		&i.Success,
@@ -64,10 +64,10 @@ func (q *Queries) GetTransfer(ctx context.Context, arg GetTransferParams) (Trans
 }
 
 const listTransfers = `-- name: ListTransfers :many
-SELECT id, from_account_id, to_fundraise_id, amount, created_at, success FROM transfers
+SELECT id, from_account_id, to_product_id, amount, created_at, success FROM transfers
 WHERE 
     from_account_id = $1 OR
-    to_fundraise_id = $2
+    to_product_id = $2
 ORDER BY id
 LIMIT $3
 OFFSET $4
@@ -75,7 +75,7 @@ OFFSET $4
 
 type ListTransfersParams struct {
 	FromAccountID int64 `json:"from_account_id"`
-	ToFundraiseID int64 `json:"to_fundraise_id"`
+	ToProductID   int64 `json:"to_product_id"`
 	Limit         int32 `json:"limit"`
 	Offset        int32 `json:"offset"`
 }
@@ -83,7 +83,7 @@ type ListTransfersParams struct {
 func (q *Queries) ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error) {
 	rows, err := q.db.QueryContext(ctx, listTransfers,
 		arg.FromAccountID,
-		arg.ToFundraiseID,
+		arg.ToProductID,
 		arg.Limit,
 		arg.Offset,
 	)
@@ -97,7 +97,7 @@ func (q *Queries) ListTransfers(ctx context.Context, arg ListTransfersParams) ([
 		if err := rows.Scan(
 			&i.ID,
 			&i.FromAccountID,
-			&i.ToFundraiseID,
+			&i.ToProductID,
 			&i.Amount,
 			&i.CreatedAt,
 			&i.Success,
@@ -115,24 +115,24 @@ func (q *Queries) ListTransfers(ctx context.Context, arg ListTransfersParams) ([
 	return items, nil
 }
 
-const transferSuccess = `-- name: TransferSuccess :one
+const updateTransferSuccess = `-- name: UpdateTransferSuccess :one
 UPDATE transfers SET success = $2
 WHERE id = $1
-RETURNING id, from_account_id, to_fundraise_id, amount, created_at, success
+RETURNING id, from_account_id, to_product_id, amount, created_at, success
 `
 
-type TransferSuccessParams struct {
+type UpdateTransferSuccessParams struct {
 	ID      int64 `json:"id"`
 	Success bool  `json:"success"`
 }
 
-func (q *Queries) TransferSuccess(ctx context.Context, arg TransferSuccessParams) (Transfer, error) {
-	row := q.db.QueryRowContext(ctx, transferSuccess, arg.ID, arg.Success)
+func (q *Queries) UpdateTransferSuccess(ctx context.Context, arg UpdateTransferSuccessParams) (Transfer, error) {
+	row := q.db.QueryRowContext(ctx, updateTransferSuccess, arg.ID, arg.Success)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,
 		&i.FromAccountID,
-		&i.ToFundraiseID,
+		&i.ToProductID,
 		&i.Amount,
 		&i.CreatedAt,
 		&i.Success,
