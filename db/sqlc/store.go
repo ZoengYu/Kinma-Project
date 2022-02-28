@@ -87,7 +87,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferParams) (Transfe
 		}
 		//update transfer if is successed
 		if (result.Fundraise.ProgressAmount == getFundraise.ProgressAmount + result.Transfer.Amount){
-			result.Transfer, err = q.UpdateTransferSuccess(ctx, UpdateTransferSuccessParams{
+			result.Transfer, err = q.UpdateTransferStatus(ctx, UpdateTransferStatusParams{
 				result.Transfer.ID, true})
 				if err != nil{
 					return err

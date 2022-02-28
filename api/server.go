@@ -48,18 +48,18 @@ func (server *Server) setupRouter() {
 		
 		authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
-		authRoutes.POST("/accounts", server.createAccount)
-		authRoutes.GET("/accounts/:id", server.getAccount)
-		authRoutes.GET("/accounts", server.listAccount)
+		authRoutes.POST("/myaccounts", server.createAccount)
+		authRoutes.GET("/myaccounts/:id", server.getAccount)
+		authRoutes.GET("/myaccounts", server.listMyAccount)
 
-		authRoutes.GET("/myproducts/:id", server.getProduct)
+		authRoutes.GET("/myproducts/:product_id", server.getMyProduct)
 		authRoutes.GET("/myproducts", server.listMyProduct)
-		authRoutes.POST("/myproducts", server.createProduct)
-		authRoutes.PUT("/myproduct/:product_id", server.updateProduct)
+		authRoutes.POST("/myproducts", server.createMyProduct)
+		authRoutes.PUT("/myproduct/:product_id", server.updateMyProduct)
 
-		authRoutes.GET("/myproduct/:product_id/fundraise", server.getFundraise)
-		authRoutes.POST("/myproduct/:product_id/fundraise", server.createFundraise)
-		authRoutes.PUT("myproduct/:product_id/exitfundraise", server.exitFundraise)
+		authRoutes.POST("/myfundraise", server.createMyFundraise)
+		authRoutes.GET("/myfundraise", server.getMyFundraise) 
+		authRoutes.PUT("/exitmyfundraise", server.exitMyFundraise)
 	
 		authRoutes.POST("/transfer", server.createTransfer)
 		server.router = router

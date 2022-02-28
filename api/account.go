@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -69,11 +68,12 @@ func (server *Server) getAccount(ctx *gin.Context){
 	}
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	if account.Owner != authPayload.Username {
-		err := errors.New("account doesn't belong to the authenicated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	
+	//valid if the request is belong to the login user
+	if !validIsMyAccount(ctx, account, authPayload){
 		return
 	}
+
 	ctx.JSON(http.StatusOK, account)
 }
 
@@ -82,7 +82,7 @@ type listAccountRequest struct {
 	PageSize 	int32	`form:"page_size" binding:"required,min=5,max=10"`
 }
 
-func (server *Server) listAccount(ctx *gin.Context){
+func (server *Server) listMyAccount(ctx *gin.Context){
 	var req listAccountRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

@@ -57,13 +57,13 @@ func (q *Queries) DeleteAccountProduct(ctx context.Context, id int64) error {
 	return err
 }
 
-const getAccountProduct = `-- name: GetAccountProduct :one
+const getProduct = `-- name: GetProduct :one
 SELECT id, account_id, title, content, product_tag, created_at, last_update FROM product
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetAccountProduct(ctx context.Context, id int64) (Product, error) {
-	row := q.db.QueryRowContext(ctx, getAccountProduct, id)
+func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getProduct, id)
 	var i Product
 	err := row.Scan(
 		&i.ID,

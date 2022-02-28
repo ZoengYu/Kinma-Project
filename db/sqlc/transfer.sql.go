@@ -115,19 +115,19 @@ func (q *Queries) ListTransfers(ctx context.Context, arg ListTransfersParams) ([
 	return items, nil
 }
 
-const updateTransferSuccess = `-- name: UpdateTransferSuccess :one
+const updateTransferStatus = `-- name: UpdateTransferStatus :one
 UPDATE transfers SET success = $2
 WHERE id = $1
 RETURNING id, from_account_id, to_product_id, amount, created_at, success
 `
 
-type UpdateTransferSuccessParams struct {
+type UpdateTransferStatusParams struct {
 	ID      int64 `json:"id"`
 	Success bool  `json:"success"`
 }
 
-func (q *Queries) UpdateTransferSuccess(ctx context.Context, arg UpdateTransferSuccessParams) (Transfer, error) {
-	row := q.db.QueryRowContext(ctx, updateTransferSuccess, arg.ID, arg.Success)
+func (q *Queries) UpdateTransferStatus(ctx context.Context, arg UpdateTransferStatusParams) (Transfer, error) {
+	row := q.db.QueryRowContext(ctx, updateTransferStatus, arg.ID, arg.Success)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,

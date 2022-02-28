@@ -8,7 +8,7 @@ INSERT INTO product (
   $1, $2, $3,$4
 ) RETURNING *;
 
--- name: GetAccountProduct :one
+-- name: GetProduct :one
 SELECT * FROM product
 WHERE id = $1 LIMIT 1;
 

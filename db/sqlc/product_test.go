@@ -47,7 +47,7 @@ func TestDeleteProduct(t *testing.T){
 	err := testQueries.DeleteAccountProduct(context.Background(), product1.ID)
 	require.NoError(t, err)
 
-	product2, err := testQueries.GetAccountProduct(context.Background(), product1.ID)
+	product2, err := testQueries.GetProduct(context.Background(), product1.ID)
 	require.Error(t, err)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 	require.Empty(t, product2)
@@ -56,7 +56,7 @@ func TestDeleteProduct(t *testing.T){
 func TestGetProduct(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
-	product2, err := testQueries.GetAccountProduct(context.Background(), product1.ID)
+	product2, err := testQueries.GetProduct(context.Background(), product1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, product2)
 

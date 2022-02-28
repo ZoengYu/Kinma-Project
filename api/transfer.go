@@ -27,17 +27,17 @@ func (server *Server) createTransfer(ctx *gin.Context){
 		return
 	}
 
-	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-
 	//vaild if the account currency is match
-	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
+	fromAccount, valid := server.validAccountCurrency(ctx, req.FromAccountID, req.Currency)
 	if !valid{
 		return
 	}
 
-	if fromAccount.Owner != authPayload.Username{
-		err := errors.New("account doesn't belong to the authenticated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	
+	//valid if the request is belong to the login user
+	if !validIsMyAccount(ctx, fromAccount, authPayload){
 		return
 	}
 	
@@ -52,8 +52,8 @@ func (server *Server) createTransfer(ctx *gin.Context){
 		return
 	}
 
-	if targetFundraise.Success{
-		err := errors.New("fundraise project already over, thank you for the support")
+	if targetFundraise.EndDate.Valid {
+		err := errors.New("fundraise project already over, thank you for the participate")
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -78,7 +78,7 @@ func (server *Server) createTransfer(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
+func (server *Server) validAccountCurrency(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
 	account, err :=server.store.GetAccount(ctx, accountID)
 	if err != nil {
 		if err == sql.ErrNoRows{

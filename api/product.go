@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +10,7 @@ import (
 )
 
 
-type createProducRequest struct {
+type createMyProducRequest struct {
 	AccountID  			int64  		`json:"account_id" binding:"required"`
 	Title      			string 		`json:"title" binding:"required"`
 	Content    		 	string 		`json:"content" binding:"required"`
@@ -19,8 +18,8 @@ type createProducRequest struct {
 }
 
 // Server expose method for API
-func (server *Server) createProduct (ctx *gin.Context){
-	var req createProducRequest
+func (server *Server) createMyProduct (ctx *gin.Context){
+	var req createMyProducRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -36,12 +35,11 @@ func (server *Server) createProduct (ctx *gin.Context){
 	}
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-
-	if authPayload.Username != account.Owner {
-		err := errors.New("account doesn't belong to the authenicated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	
+	//valid if the request is belong to the login user
+	if !validIsMyAccount(ctx, account, authPayload){
 		return
-	}
+}
 
 	arg := db.CreateProductParams{
 		AccountID: req.AccountID,
@@ -59,30 +57,54 @@ func (server *Server) createProduct (ctx *gin.Context){
 	ctx.JSON(http.StatusOK, product)
 }
 
-type getProductRequest struct {
-	ProductID  int64  `uri:"id" binding:"required,min=1"`
+type getMyProductIDRequest struct {
+	ProductID  int64  `uri:"product_id" binding:"required,min=1"`
+}
+
+type getMyAccountProductRequest struct {
+	AccountID  int64  `json:"account_id" binding:"required,min=1"`
 }
 
 // Server expose method for API
-func (server *Server) getProduct(ctx *gin.Context){
-	var req getProductRequest
-	if err := ctx.ShouldBindUri(&req); err != nil{
+func (server *Server) getMyProduct(ctx *gin.Context){
+	var reqProductID getMyProductIDRequest
+	var reqOwner getMyAccountProductRequest
+
+	if err := ctx.ShouldBindJSON(&reqOwner); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	//Implement the DB CRUD
-	product, err := server.store.GetAccountProduct(ctx, req.ProductID)
+	if err := ctx.ShouldBindUri(&reqProductID); err != nil{
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	product, err := server.store.GetProduct(ctx, reqProductID.ProductID)
 	if err != nil {
 		if err == sql.ErrNoRows{
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
-
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return 
+		return
 	}
 
+	productOwner, err := server.store.GetAccount(ctx, product.AccountID)
+	if err != nil {
+		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	//valid if the request product is belong to the login user
+	if !validIsMyAccount(ctx, productOwner, authPayload){
+		return
+}
 
 	ctx.JSON(http.StatusOK, product)
 }
@@ -112,11 +134,10 @@ func (server *Server) listMyProduct(ctx *gin.Context){
 		return
 	}
 	
-	if authPayload.Username != account.Owner{
-		err := errors.New("product doesn't belong to the authenicated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	//valid if the request is belong to the login user
+	if !validIsMyAccount(ctx, account, authPayload){
 		return
-	}
+}
 	
 	arg := db.ListMyProductParams{
 		AccountID	: req.AccountID,
@@ -132,22 +153,22 @@ func (server *Server) listMyProduct(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, products)
 }
 
-type updateProductIDRequest struct {
+type updateMyProductIDRequest struct {
 	ProductID 	int64		`uri:"product_id" binding:"required,min=1"`
 }
 
 
-type updateProductRequest struct {
+type updateMyProductRequest struct {
 	AccountID				int64			`json:"account_id" binding:"required"`
 	Title      			string 		`json:"title" binding:"required"`
 	Content    			string 		`json:"content" binding:"required"`
 	ProductTagList 	[]string 	`json:"product_tag" binding:"required"`
 }
 
-func (server *Server) updateProduct(ctx *gin.Context){
-	var reqID updateProductIDRequest
-	var req updateProductRequest
-	if err := ctx.ShouldBindUri(&reqID); err != nil{
+func (server *Server) updateMyProduct(ctx *gin.Context){
+	var reqProduct updateMyProductIDRequest
+	var req updateMyProductRequest
+	if err := ctx.ShouldBindUri(&reqProduct); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -157,26 +178,35 @@ func (server *Server) updateProduct(ctx *gin.Context){
 		return
 	}
 	
-	account, err := server.store.GetAccount(ctx, req.AccountID)
+	product, err := server.store.GetProduct(ctx, reqProduct.ProductID)
 	if err != nil {
 		if err == sql.ErrNoRows{
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
-
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
-	if authPayload.Username != account.Owner{
-		err := errors.New("account doesn't belong to the authenicated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	productOwner, err := server.store.GetAccount(ctx, product.AccountID)
+	if err != nil {
+		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	//valid if the request is belong to the login user
+	if !validIsMyAccount(ctx, productOwner, authPayload){
+		return
+}
 
 	arg := db.UpdateProductDetailParams{
-		ID: 				reqID.ProductID,
+		ID: 				reqProduct.ProductID,
 		Title: 			req.Title,
 		Content: 		req.Content,
 		ProductTag: req.ProductTagList,

@@ -22,7 +22,7 @@ ORDER BY id
 LIMIT $3
 OFFSET $4;
 
--- name: UpdateTransferSuccess :one
+-- name: UpdateTransferStatus :one
 UPDATE transfers SET success = $2
 WHERE id = $1
 RETURNING *;
