@@ -1,39 +1,29 @@
 version: "3.9"
    
 services:
-  # envoy:
-  #   build:
-  #     context: ./
-  #     dockerfile: ./envoy/Dockerfile
-  #   image: grpcweb/envoy
-  #   ports:
-  #     - "10000:10000"
-  #     - "9901:9901"
-  #   links:
-  #     - server
   db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+    image: postgres:14-alpine
+    restart: always
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-  server:
+      - POSTGRES_DB=kinma_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+  api:
     build:
       context: .
-      dockerfile: ./dockerfile/dockerfile.flyingX
+      dockerfile: ./dockerfile/Dockerfile.api
     restart: always
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
+    environment:
+      - DB_SOURCE=postgresql://root:password@db:5432/kinma_db?sslmode=disable
     ports:
-      - "8000:8000"
-    depends_on:
-      - db
+      - "8080:8080"
+
   kinma-ui:
       build:
         context: .
         dockerfile: ./dockerfile/Dockerfile.ui
       ports:
-        - "80:80"
+        - "80:8000"
+      depends_on:
+        - api
+
