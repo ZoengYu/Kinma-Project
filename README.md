@@ -1,14 +1,8 @@
 # Kinma-Project
-*Kinma Project is design for product funding platform.*
+**Kinma Project is design for product funding platform.**
 
-I plan to implement both python fastAPI or Rest framework & Golang as a Backend Server
+This repo use Django in the beginning.
 
+But I plan to implement both python (maybe fastAPI or Rest framework) & Golang(gin) as a Backend api Server
 
-##temp
-
-main branch using Django as a Backend Server for now, we create a new branch for it
-
-
-`docker-compose build` to build db, AngularUI, Django Backend Server images
-
-`docker-compose up` to launch all service
+For each backend server pratice, please swap to the corresponding branch
