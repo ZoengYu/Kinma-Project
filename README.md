@@ -4,6 +4,16 @@
 This branch use **Golang** as backend server, AngularJS as frontend UI
 
   #
+  ```
+  git clone https://github.com/ZoengYu/Kinma-Project.git
+  cd Kinma-Project 
+  git checkout kinma-golangBackend
+  ```
+
+`docker-compose build` to build postgres db, AngularUI, Golang backend api service
+
+`docker-compose up` to launch all service
+  #
 create database migration schema
 ```
 migrate create -ext sql -dir db/migration -seq init_schema
@@ -24,9 +34,3 @@ make migratedown
 ```
 make server
 ```
-
-
-
-`docker-compose build` to build db, AngularUI, Golang backend and DB service
-
-`docker-compose up` to launch all service

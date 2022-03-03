@@ -8,6 +8,7 @@ services:
       - POSTGRES_DB=kinma_db
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
+      - TZ=Asia/Taipei
   api:
     build:
       context: .
@@ -15,6 +16,7 @@ services:
     restart: always
     environment:
       - DB_SOURCE=postgresql://root:password@db:5432/kinma_db?sslmode=disable
+      - TZ=Asia/Taipei
     ports:
       - "8080:8080"
 
@@ -22,6 +24,8 @@ services:
       build:
         context: .
         dockerfile: ./dockerfile/Dockerfile.ui
+      environment:
+        - TZ=Asia/Taipei
       ports:
         - "80:8000"
       depends_on:
