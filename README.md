@@ -3,14 +3,22 @@
 
 This branch use **Golang** as backend server, AngularJS as frontend UI
 
-  #
+
+# Integration with AWS
+**kinma-golangBackend** branch is used for continuous development
+
+**kinma-golangBackend-deploy** will deploy the IMG to AWS register by `deploy.yml`, pull request is the only way to deploy the new image.
+
+
+# Launch service on local
+
   ```
   git clone https://github.com/ZoengYu/Kinma-Project.git
   cd Kinma-Project 
   git checkout kinma-golangBackend
   ```
 
-`docker-compose build` to build postgres db, AngularUI, Golang backend api service
+`docker-compose build` will build postgres db, AngularUI, Golang backend api service
 
 `docker-compose up` to launch all service
   #
