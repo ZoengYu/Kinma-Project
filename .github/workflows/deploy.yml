@@ -27,7 +27,7 @@ jobs:
     
     - name: Load secrets from aws and save to app.env
       #jq was install on Linux as default, aws-cli is setup at "Configure ASW credentials" step
-      run: aws secretsmanager get-secret-value --secret-id kinma --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app_aws.env
+      run: aws secretsmanager get-secret-value --secret-id kinma --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
 
     - name: Build, tag, and push image to Amazon ECR
       env:
