@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kinma-api-deployment
+  labels:
+    app: kinma-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kinma-api
+  template:
+    metadata:
+      labels:
+        app: kinma-api
+    spec:
+      containers:
+      - name: kinma-api
+        #must be linux base
+        image: 326953071241.dkr.ecr.ap-southeast-1.amazonaws.com/kinma:3a447c853cfdbcb7f0d2c9dfc9a226cd56314a39
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
