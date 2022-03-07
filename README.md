@@ -1,6 +1,8 @@
 # Kinma-Project
 *Kinma Project is design for product fundraising platform.*
 
+kinma-golangBackend-deploy branch used to deploy IMG to AWS ECR
+
 This branch use **Golang** as backend server, AngularJS as frontend UI
 
   #

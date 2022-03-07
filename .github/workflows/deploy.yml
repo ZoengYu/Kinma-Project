@@ -1,8 +1,8 @@
 name: Deploy to production
 
 on:
-  push:
-    branches: [ kinma-golangBackend-deploy ]
+  # push:
+  #   branches: [ kinma-golangBackend-deploy ]
   pull_request:
     branches: [ kinma-golangBackend-deploy ]
 
