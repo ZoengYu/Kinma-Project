@@ -12,9 +12,10 @@ import (
 )
 
 type createUserRequest struct {
-	Username  string 	`json:"username" binding:"required,alphanum"`
+	Username  string 	`json:"username" binding:"required,min=2"`
 	Password 	string 	`json:"password" binding:"required,min=6"`
 	Email			string 	`json:"email" binding:"required,email"`
+	Phone			string  `json:"phone" binding:"required,min=10"`
 }
 
 type userResponse struct{
@@ -22,6 +23,7 @@ type userResponse struct{
 	Email             string    `json:"email"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
+	Phone							string  	`json:"phone" binding:"required,min=10"`
 }
 
 func newUserResponse(user db.User) userResponse{
@@ -30,6 +32,7 @@ func newUserResponse(user db.User) userResponse{
 		Email							: user.Email,
 		PasswordChangedAt	: user.PasswordChangedAt,
 		CreatedAt					: user.CreatedAt,
+		Phone							: user.Phone,
 	}
 }
 // Server expose method for API
@@ -49,6 +52,7 @@ func (server *Server) createUser(ctx *gin.Context){
 		Username			: req.Username,
 		HashedPassword: hashedpassword,
 		Email					: req.Email,
+		Phone					: req.Phone,
 	}
 	//Implement the DB CRUD
 	user, err := server.store.CreateUser(ctx, arg)

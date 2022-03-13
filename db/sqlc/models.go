@@ -50,6 +50,7 @@ type User struct {
 	Username          string    `json:"username"`
 	HashedPassword    string    `json:"hashed_password"`
 	Email             string    `json:"email"`
+	Phone             string    `json:"phone"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
 }

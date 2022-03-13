@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth.service'
+import { AuthService, RegisterResponse } from '../auth.service'
 import {FormGroup, FormBuilder, Validators , FormControl} from '@angular/forms';
-import {forbiddenNameValidator,MatchPasswordValidator,MatchEmailValidator} from '../validator/form.validator'
+import {forbiddenNameValidator,MatchPasswordValidator,MatchEmailValidator,forbiddenPhoneValidator} from '../validator/form.validator'
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -9,16 +10,18 @@ import {forbiddenNameValidator,MatchPasswordValidator,MatchEmailValidator} from 
 })
 
 export class RegisterComponent implements OnInit {
-  backendResponse = ''
-  inconsistentPassword= false
+  inconsistentPassword = false
+  formInputInvalid = false
   
   invalidUserName = /admin|password/
   matchEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
   matchPasswordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/
+  //Taiwan phone number format
+  matchPhoneNumber = /^09\d{2}-?\d{3}-?\d{3}$/
 
   constructor(
     private _auth:AuthService,
-    private formBuilder: FormBuilder
+    private fb: FormBuilder
     ) { }
     get userName() {
       return this.registrationForm.get('userName') as FormControl;
@@ -26,32 +29,42 @@ export class RegisterComponent implements OnInit {
     get userEmail(){
       return this.registrationForm.get('userEmail') as FormControl;
     }
-
     get password(){
       return this.registrationForm.get('password') as FormControl;
     }
+    get phoneNumber(){
+      return this.registrationForm.get('phoneNumber') as FormControl;
+    }
   
-  registrationForm = this.formBuilder.group({
-    userName: ['',[Validators.required, Validators.minLength(2),forbiddenNameValidator(this.invalidUserName)]],
-    userEmail: ['',[Validators.required,MatchEmailValidator(this.matchEmailRegex)]],
-    password: ['',[Validators.required,Validators.minLength(8),MatchPasswordValidator(this.matchPasswordRegex)]],
-    confirmPassword: '*至少8個字元與1個數字',
-    phoneNumber:Validators.minLength(8)
+  registrationForm = this.fb.group({
+    userName        : ['',[Validators.required, Validators.minLength(2), forbiddenNameValidator(this.invalidUserName)]],
+    userEmail       : ['',[Validators.required, MatchEmailValidator(this.matchEmailRegex)]],
+    password        : ['',[Validators.required, Validators.minLength(8), MatchPasswordValidator(this.matchPasswordRegex)]],
+    confirmPassword : '*至少8個字元與1個數字',
+    phoneNumber     : ['',[Validators.required, Validators.minLength(8), forbiddenPhoneValidator(this.matchPhoneNumber)]]
   })
 
   ngOnInit(): void {
   }
   
   onSubmit(data:FormGroup){
-    this.backendResponse = this._auth.registerUser(data);
-    if (this.backendResponse == 'password inconsistent'){
-      this.inconsistentPassword = true
-      console.log("註冊失敗:",this.backendResponse);
-    } else if(this.backendResponse == 'Success') {
-      this.inconsistentPassword = false
-      console.log("註冊成功?:",data.valid);
+    if (data.invalid){
+      this.formInputInvalid = true
+      return
     }
-  }
+    
+    this._auth.registerUser(data)
+      .subscribe(
+        (res: RegisterResponse) => {
+          console.log('註冊成功:',res)
+          this.openLoginDialog()
+        },
+        (error: HttpErrorResponse) => {
+          console.log('error response', error)
+          return
+        },
+      )
+  };
 
   openLoginDialog(){
     this._auth.loginPageActive = true;
@@ -61,9 +74,19 @@ export class RegisterComponent implements OnInit {
  * When invalid password notification show up, invalidPassword=True
  * Turn off the alerm by user click and set it back to "false"
  */
-  closeAlert(){
+  closePasswordAlert(){
     if (this.inconsistentPassword){
       this.inconsistentPassword = !this.inconsistentPassword;
+    }
+  }
+
+  /**
+ * When form is not fill out then notification show up, formInputInvalid=True
+ * Turn off the alerm by user clicked and set it back to "false"
+ */
+  closeInvalidAlert(){
+    if (this.formInputInvalid){
+      this.formInputInvalid = !this.formInputInvalid;
     }
   }
 }

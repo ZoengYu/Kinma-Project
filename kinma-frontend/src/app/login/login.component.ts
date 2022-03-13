@@ -18,12 +18,14 @@ export class LoginComponent implements OnInit {
   onSubmit(data:NgForm){
     this._authService.loginUser(data)
       .subscribe(
-        res => console.log('response:',res),
-        err => console.log('err:',err)
+        res => {
+          console.log('login success:',res)
+        },
+        err => {
+          console.log('err:',err)
+          return
+        }
       );
-
-    console.log('data value:',data.value)
-    console.log(data.valid)
   }
 
   openRegisterPage(){

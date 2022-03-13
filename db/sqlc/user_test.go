@@ -16,6 +16,7 @@ func createRandomUser(t *testing.T) User{
 		Username				: util.RandomOwner(),
 		HashedPassword	: hashedPassword,
 		Email						: util.RandomEmail(),
+		Phone						: util.RandomString(10),
 	}
 
 	user, err := testQueries.CreateUser(context.Background(),arg)
@@ -25,6 +26,7 @@ func createRandomUser(t *testing.T) User{
 	require.Equal(t,arg.Username, user.Username)
 	require.Equal(t,arg.HashedPassword, user.HashedPassword)
 	require.Equal(t,arg.Email, user.Email)
+	require.Equal(t, arg.Phone, user.Phone)
 
 	require.True(t, user.PasswordChangedAt.IsZero())
 	require.NotZero(t, user.CreatedAt)

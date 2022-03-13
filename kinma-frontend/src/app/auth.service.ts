@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import {FormGroup,NgForm} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
+
+export interface RegisterResponse{
+  username          : string;
+  email             : string;
+  phone             : string;
+  passwordChangeAt  : any;
+  createdAt         : any;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,21 +23,16 @@ export class AuthService {
    }
 
   registerUser(user:FormGroup) :any {
-
-    if (user.valid && user.value.password != user.value.confirmPassword){
-      this.response = 'password inconsistent';
-      console.log("Error:請確認輸入密碼一致！");
-      return this.response
-    } else if (user.valid){
-      this.response = 'Success';
-      console.log("Register Success!");
-      console.log(user.value);
-      return this.response
-    }
+    return this.http.post<any>(this.apiServiceUrl + "/users", 
+      { "username"  :user.value.userName, 
+        "password"  :user.value.password,
+        "email"     :user.value.userEmail,
+        "phone"     :user.value.phoneNumber
+      })
   }
 
   loginUser(user:NgForm) {
-    return this.http.post<any>(this.apiServiceUrl + "/users/login", user.value)
+    return this.http.post<RegisterResponse>(this.apiServiceUrl + "/users/login", user.value)
   }
 
   isLoginPageActive() {

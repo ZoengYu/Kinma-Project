@@ -10,7 +10,7 @@ export function forbiddenNameValidator(forbiddenName: RegExp): ValidatorFn{
 export function forbiddenPhoneValidator(forbiddenPhone: RegExp): ValidatorFn{
 	return (control: AbstractControl): {[key:string]:any} | null => {
 		const forbidden = forbiddenPhone.test(control.value);
-		return forbidden ? { 'forbiddenPhone': {value: control.value}} : null;
+		return forbidden ? null : { 'fordiddenPhoneFormat': {value: control.value}};
 	}
 }
 
@@ -21,7 +21,7 @@ export function forbiddenPhoneValidator(forbiddenPhone: RegExp): ValidatorFn{
  export function MatchEmailValidator(matchEmailRegex: RegExp): ValidatorFn{
 	return (control: AbstractControl): {[key:string]:any} | null => {
 		const IsMatchEmail = matchEmailRegex.test(control.value);
-		return IsMatchEmail ? null : { 'NotMatchEmail': {value: control.value}};
+		return IsMatchEmail ? null : { 'fordiddenEmailFormat': {value: control.value}};
 	}
 }
 
@@ -32,6 +32,6 @@ export function forbiddenPhoneValidator(forbiddenPhone: RegExp): ValidatorFn{
 export function MatchPasswordValidator(matchPasswordRegex: RegExp): ValidatorFn{
 	return (control: AbstractControl): {[key:string]:any} | null => {
 		const IsMatchPassword = matchPasswordRegex.test(control.value);
-		return IsMatchPassword ? null : { 'NotMatchPassword': {value: control.value}};
+		return IsMatchPassword ? null : { 'fordiddenPasswordFormat': {value: control.value}};
 	}
 }
