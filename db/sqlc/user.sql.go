@@ -11,32 +11,24 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (
   username,
   hashed_password,
-  full_name,
   email
 ) VALUES (
-  $1, $2, $3, $4
-) RETURNING username, hashed_password, full_name, email, password_changed_at, created_at
+  $1, $2, $3
+) RETURNING username, hashed_password, email, password_changed_at, created_at
 `
 
 type CreateUserParams struct {
 	Username       string `json:"username"`
 	HashedPassword string `json:"hashed_password"`
-	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser,
-		arg.Username,
-		arg.HashedPassword,
-		arg.FullName,
-		arg.Email,
-	)
+	row := q.db.QueryRowContext(ctx, createUser, arg.Username, arg.HashedPassword, arg.Email)
 	var i User
 	err := row.Scan(
 		&i.Username,
 		&i.HashedPassword,
-		&i.FullName,
 		&i.Email,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -45,7 +37,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
-SELECT username, hashed_password, full_name, email, password_changed_at, created_at FROM users
+SELECT username, hashed_password, email, password_changed_at, created_at FROM users
 WHERE username = $1 LIMIT 1
 `
 
@@ -55,7 +47,6 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	err := row.Scan(
 		&i.Username,
 		&i.HashedPassword,
-		&i.FullName,
 		&i.Email,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -65,16 +56,15 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users 
-SET username = $2, hashed_password = $3, full_name = $4, email = $5
+SET username = $2, hashed_password = $3, email = $4
 WHERE username = $1
-RETURNING username, hashed_password, full_name, email, password_changed_at, created_at
+RETURNING username, hashed_password, email, password_changed_at, created_at
 `
 
 type UpdateUserParams struct {
 	Username       string `json:"username"`
 	Username_2     string `json:"username_2"`
 	HashedPassword string `json:"hashed_password"`
-	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
 }
 
@@ -83,14 +73,12 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.Username,
 		arg.Username_2,
 		arg.HashedPassword,
-		arg.FullName,
 		arg.Email,
 	)
 	var i User
 	err := row.Scan(
 		&i.Username,
 		&i.HashedPassword,
-		&i.FullName,
 		&i.Email,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,

@@ -2,10 +2,9 @@
 INSERT INTO users (
   username,
   hashed_password,
-  full_name,
   email
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3
 ) RETURNING *;
 
 -- name: GetUser :one
@@ -14,7 +13,7 @@ WHERE username = $1 LIMIT 1;
 
 -- name: UpdateUser :one
 UPDATE users 
-SET username = $2, hashed_password = $3, full_name = $4, email = $5
+SET username = $2, hashed_password = $3, email = $4
 WHERE username = $1
 RETURNING *;
 

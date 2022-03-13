@@ -15,7 +15,6 @@ func createRandomUser(t *testing.T) User{
 	arg := CreateUserParams{
 		Username				: util.RandomOwner(),
 		HashedPassword	: hashedPassword,
-		FullName				: util.RandomOwner(),
 		Email						: util.RandomEmail(),
 	}
 
@@ -25,7 +24,6 @@ func createRandomUser(t *testing.T) User{
 
 	require.Equal(t,arg.Username, user.Username)
 	require.Equal(t,arg.HashedPassword, user.HashedPassword)
-	require.Equal(t,arg.FullName, user.FullName)
 	require.Equal(t,arg.Email, user.Email)
 
 	require.True(t, user.PasswordChangedAt.IsZero())
@@ -45,7 +43,6 @@ func TestGetUser(t *testing.T) {
 
 	require.Equal(t, user.Username,getUser.Username)
 	require.Equal(t, user.HashedPassword,getUser.HashedPassword)
-	require.Equal(t, user.FullName,getUser.FullName)
 	require.Equal(t, user.Email,getUser.Email)
 
 	require.WithinDuration(t, user.PasswordChangedAt,getUser.PasswordChangedAt, time.Second)
