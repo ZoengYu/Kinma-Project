@@ -1,3 +1,4 @@
+import { isEmptyExpression } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import { AuthService } from '../auth.service'
@@ -13,9 +14,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
   onSubmit(data:NgForm){
-    this._authService.loginUser(data);
-    console.log(data.value)
+    this._authService.loginUser(data)
+      .subscribe(
+        res => console.log('response:',res),
+        err => console.log('err:',err)
+      );
+
+    console.log('data value:',data.value)
     console.log(data.valid)
   }
 

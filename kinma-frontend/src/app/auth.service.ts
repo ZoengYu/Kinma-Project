@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import {FormGroup,NgForm} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private _registerUrl = "";
-  private _loginUrl = "";
+  private apiServiceUrl = "http://localhost:8080";
+
   public loginPageActive = false;
   public response:string = "Success";
-  constructor() {
+  constructor(private http: HttpClient) {
    }
 
   registerUser(user:FormGroup) :any {
@@ -27,10 +28,7 @@ export class AuthService {
   }
 
   loginUser(user:NgForm) {
-    if (user.valid){
-      console.log("Login Success!");
-      console.log(user.value);
-    }
+    return this.http.post<any>(this.apiServiceUrl + "/users/login", user.value)
   }
 
   isLoginPageActive() {

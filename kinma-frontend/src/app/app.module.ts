@@ -21,8 +21,9 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RegisterComponent } from './register/register.component';
-import { SignInComponent } from './sign-in/sign-in.component'
-import { AuthService } from './auth.service'
+import { SignInComponent } from './sign-in/sign-in.component';
+import { AuthService } from './auth.service';
+import {HttpClientModule} from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,6 +46,7 @@ import { AuthService } from './auth.service'
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     
     MDBBootstrapModule.forRoot(),
     BrowserAnimationsModule,

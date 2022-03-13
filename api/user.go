@@ -69,24 +69,34 @@ func (server *Server) createUser(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, rsp)
 }
 
-type loginUserRequest struct {
-	Username  string 	`json:"username" binding:"required,alphanum"`
+// type loginUserRequest struct {
+// 	Username  string 	`json:"username" binding:"required,alphanum"`
+// 	Password 	string 	`json:"password" binding:"required,min=6"`
+// }
+
+// type loginUserResponse struct {
+// 	AccessToken string 				`json:"access_token"`
+// 	User				userResponse 	`json:"user"`
+// }
+
+type loginUserByMailRequest struct {
+	Email			string 	`json:"email" binding:"required,email"`
 	Password 	string 	`json:"password" binding:"required,min=6"`
 }
 
-type loginUserResponse struct {
+type loginUserByMailResponse struct {
 	AccessToken string 				`json:"access_token"`
 	User				userResponse 	`json:"user"`
 }
 
 func (server *Server) loginUser(ctx *gin.Context){
-	var req loginUserRequest
+	var req loginUserByMailRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil{
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	user, err := server.store.GetUser(ctx, req.Username)
+	user, err := server.store.GetUserByMail(ctx, req.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
@@ -111,7 +121,7 @@ func (server *Server) loginUser(ctx *gin.Context){
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
-	rsp := loginUserResponse{
+	rsp := loginUserByMailResponse{
 		AccessToken	: accessToken,
 		User				: newUserResponse(user),
 	}
