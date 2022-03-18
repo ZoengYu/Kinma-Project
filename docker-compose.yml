@@ -1,6 +1,8 @@
 version: "3.9"
    
 services:
+  #this db listen to port 5432 wtihin the kinma-project_default Networks
+  #It's affect any other postgres db service which running on local 5432 port
   db:
     image: postgres:14-alpine
     restart: always

@@ -7,7 +7,7 @@ This branch use **Golang** as backend server, AngularJS as frontend UI
 # Integration with AWS
 **kinma-golangBackend** branch is used for continuous development
 
-**kinma-golangBackend-deploy** will deploy the IMG to AWS register by `deploy.yml`, pull request is the only way to deploy the new image.
+**kinma-golangBackend-deploy** will deploy the IMG to AWS register by `deploy.yml`, Pull Request is the only way to deploy the new image.
 
 
 # Launch service on local
@@ -22,13 +22,13 @@ This branch use **Golang** as backend server, AngularJS as frontend UI
 
 `docker-compose up` to launch all service
   #
-create database migration schema
-```
-migrate create -ext sql -dir db/migration -seq init_schema
-```
 - Launch db
  ```
 make postgres
+```
+- Create kinma_db
+ ```
+make createdb
 ```
 - migrate the db
 ```
@@ -41,4 +41,10 @@ make migratedown
 - Launch the API Server
 ```
 make server
+```
+
+#
+create database migration schema
+```
+migrate create -ext sql -dir db/migration -seq init_schema
 ```
