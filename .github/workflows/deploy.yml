@@ -4,7 +4,7 @@ on:
   # push:
   #   branches: [ kinma-golangBackend-deploy ]
   pull_request:
-    branches: [ kinma-golangBackend-deploy ]
+    branches: [ main ]
 
 jobs:
 

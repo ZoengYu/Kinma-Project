@@ -2,9 +2,9 @@ name: ci-test
 
 on:
   push:
-    branches: [ kinma-golangBackend ]
+    branches: [ main ]
   pull_request:
-    branches: [ kinma-golangBackend ]
+    branches: [ main ]
 
 jobs:
 
