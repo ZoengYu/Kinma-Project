@@ -5,13 +5,15 @@
 
 Using **Golang** as a backend server, AngularJS as a frontend UI
 
+#
+![Kinma Platform Demo](docs/static_files/kinma%20demo.png "Kinma Demo")
+
 
 # Integration with AWS
 **kinma-golangBackend** branch is used for continuous development
 
  [The EC2 service on AWS has been suspend for now]  
 **kinma-golangBackend-deploy** will deploy the IMG to AWS register by `deploy.yml`, Pull Request is the only way to deploy the new image.
-
 
 # Launch kinma service on local
 
