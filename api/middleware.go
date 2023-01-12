@@ -11,13 +11,13 @@ import (
 )
 
 const (
-	authorizationHeaderKey = "authorization"
+	authorizationHeaderKey      = "authorization"
 	authorizationHeaderTypeBear = "bearer"
-	//payload will be store in the gin context with this specific key 
+	//payload will be store in the gin context with this specific key
 	authorizationPayloadKey = "authorization_payload"
 )
 
-func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc{
+func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
@@ -34,7 +34,7 @@ func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc{
 		}
 
 		authoizationType := strings.ToLower(fields[0])
-		if authoizationType != authorizationHeaderTypeBear{
+		if authoizationType != authorizationHeaderTypeBear {
 			err := fmt.Errorf("unsupport authorization type %s", authoizationType)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return

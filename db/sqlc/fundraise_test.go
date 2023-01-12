@@ -9,14 +9,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomFundraise(t *testing.T, product Product) Fundraise{
+func createRandomFundraise(t *testing.T, product Product) Fundraise {
 	amount := util.RandomMoney()
 	fundraiseArg := CreateFundraiseParams{
-		ProductID				: product.ID,
-		TargetAmount		: amount,
-		ProgressAmount	: amount/2,
+		ProductID:      product.ID,
+		TargetAmount:   amount,
+		ProgressAmount: amount / 2,
 	}
-	
+
 	fundraise, err := testQueries.CreateFundraise(context.Background(), fundraiseArg)
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise)
@@ -31,19 +31,19 @@ func createRandomFundraise(t *testing.T, product Product) Fundraise{
 	return fundraise
 }
 
-func TestCreateFundraise(t *testing.T){
+func TestCreateFundraise(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 
 	createRandomFundraise(t, product1)
 }
 
-func TestGetFundraise(t *testing.T){
+func TestGetFundraise(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 	fundraise1 := createRandomFundraise(t, product1)
 	fundraise2, err := testQueries.GetProductFundraise(context.Background(), product1.ID)
-	
+
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise2)
 	require.Equal(t, fundraise1.ProductID, fundraise2.ProductID)
@@ -52,25 +52,25 @@ func TestGetFundraise(t *testing.T){
 	require.WithinDuration(t, fundraise1.StartDate, fundraise2.StartDate, time.Second)
 }
 
-//if progress amount exceed target amount, Success should return true
-func TestExitFundraise(t *testing.T){
+// if progress amount exceed target amount, Success should return true
+func TestExitFundraise(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 	fundraise1 := createRandomFundraise(t, product1)
 
 	//fundraise Success
-	if (fundraise1.TargetAmount < fundraise1.ProgressAmount){
+	if fundraise1.TargetAmount < fundraise1.ProgressAmount {
 		fundraise1.Success = true
 	}
 	arg := ExitFundraiseParams{
-		ProductID : product1.ID,
-		Success		: fundraise1.Success,
+		ProductID: product1.ID,
+		Success:   fundraise1.Success,
 	}
-	
+
 	endFundraise, err := testQueries.ExitFundraise(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, endFundraise)
-	
+
 	fundraise2, err := testQueries.GetProductFundraise(context.Background(), product1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, fundraise2)
@@ -80,36 +80,36 @@ func TestExitFundraise(t *testing.T){
 	require.NotEmpty(t, endFundraise.EndDate)
 }
 
-func TestUpdateFundraise(t *testing.T){
+func TestUpdateFundraise(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 	fundraise1 := createRandomFundraise(t, product1)
-	
+
 	arg := UpdateFundraiseProgressAmountParams{
-		ProductID			: fundraise1.ProductID,
+		ProductID:      fundraise1.ProductID,
 		ProgressAmount: util.RandomMoney(),
 	}
 
-	updatedFundraise, err := testQueries.UpdateFundraiseProgressAmount(context.Background(),arg)
+	updatedFundraise, err := testQueries.UpdateFundraiseProgressAmount(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, updatedFundraise)
 	require.Equal(t, arg.ProductID, updatedFundraise.ProductID)
 	require.Equal(t, arg.ProgressAmount, updatedFundraise.ProgressAmount)
 }
 
-func TestAddFundraiseProgressAmount(t *testing.T){
+func TestAddFundraiseProgressAmount(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 	fundraise1 := createRandomFundraise(t, product1)
 
 	arg := AddFundraiseProgressAmountParams{
-		ID		: product1.ID,
-		Amount: util.RandomInt(0,1000),
+		ID:     product1.ID,
+		Amount: util.RandomInt(0, 1000),
 	}
 
 	updatedFundraise, err := testQueries.AddFundraiseProgressAmount(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, updatedFundraise)
-	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount + arg.Amount)
+	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount+arg.Amount)
 	require.Equal(t, arg.ID, updatedFundraise.ProductID)
 }

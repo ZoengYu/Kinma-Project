@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTransfer(t *testing.T){
+func TestTransfer(t *testing.T) {
 	store := NewStore(testDB)
 
 	account1 := createRandomAccount(t)
@@ -24,13 +24,13 @@ func TestTransfer(t *testing.T){
 	errs := make(chan error)
 	results := make(chan TransferTxResult)
 
-	for i :=0; i < n; i++ {
-		go func(){
+	for i := 0; i < n; i++ {
+		go func() {
 			//Transfer will include `createTransfer` Record and `addMoney` to product's fundraise
 			result, err := store.TransferTx(context.Background(), TransferParams{
-				FromAccountID		: account1.ID,
-				ToProductID			: fundraise1.ProductID,
-				Amount					: amount,
+				FromAccountID: account1.ID,
+				ToProductID:   fundraise1.ProductID,
+				Amount:        amount,
 			})
 
 			errs <- err
@@ -38,7 +38,7 @@ func TestTransfer(t *testing.T){
 		}()
 	}
 
-	for i := 0;i < n; i++ {
+	for i := 0; i < n; i++ {
 		err := <-errs
 		require.NoError(t, err)
 
@@ -56,17 +56,17 @@ func TestTransfer(t *testing.T){
 		require.NotZero(t, transfer.CreatedAt)
 
 		transferSuccess, err := store.GetTransfer(context.Background(), GetTransferParams{
-			FromAccountID	: account1.ID,
-			ToProductID		: fundraise1.ProductID,
+			FromAccountID: account1.ID,
+			ToProductID:   fundraise1.ProductID,
 		})
 		require.NoError(t, err)
 
-		//check account ID & fundraise ID is correct 
+		//check account ID & fundraise ID is correct
 		require.Equal(t, account1.ID, result.FromAccountID.ID)
 		require.Equal(t, fundraise1.ID, result.Fundraise.ID)
 
 		// check amount progress is equivalent as expected
-		require.Equal(t, beforeTxAmount + int64(i + 1)* amount, result.Fundraise.ProgressAmount)
+		require.Equal(t, beforeTxAmount+int64(i+1)*amount, result.Fundraise.ProgressAmount)
 		fmt.Print(result.Fundraise.ProgressAmount)
 
 		// check get fundraise is working well during the transaction
@@ -80,5 +80,5 @@ func TestTransfer(t *testing.T){
 	//check final update of fundraise amount
 	updatedFundraise, err := store.GetProductFundraise(context.Background(), fundraise1.ProductID)
 	require.NoError(t, err)
-	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount + amount * int64(n))
+	require.Equal(t, updatedFundraise.ProgressAmount, fundraise1.ProgressAmount+amount*int64(n))
 }

@@ -14,9 +14,9 @@ var (
 
 // Payload contains the payload data of token
 type Payload struct {
-	ID 				uuid.UUID `json:"id"`
-	Username 	string 		`json:"username"`
-	IssuedAt 	time.Time `json:"issued_at"`
+	ID        uuid.UUID `json:"id"`
+	Username  string    `json:"username"`
+	IssuedAt  time.Time `json:"issued_at"`
 	ExpiredAt time.Time `json:"expired_at"`
 }
 
@@ -27,18 +27,18 @@ func NewPayload(username string, duration time.Duration) (*Payload, error) {
 	}
 
 	payload := &Payload{
-		ID				: tokenID,
-		Username	: username,
-		IssuedAt	: time.Now(),
-		ExpiredAt	: time.Now().Add(duration),
+		ID:        tokenID,
+		Username:  username,
+		IssuedAt:  time.Now(),
+		ExpiredAt: time.Now().Add(duration),
 	}
-	return payload, err 
+	return payload, err
 }
 
 // Valid checks if the token payload is valid or not
 // Valid() func is required for jwt.NewWithClaims()
 func (payload *Payload) Valid() error {
-	if time.Now().After(payload.ExpiredAt){
+	if time.Now().After(payload.ExpiredAt) {
 		return ErrExpiredToken
 	}
 	return nil

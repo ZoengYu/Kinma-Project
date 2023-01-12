@@ -8,10 +8,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAsymmetricPasetoMaker(t *testing.T){
+func TestAsymmetricPasetoMaker(t *testing.T) {
 	maker, err := NewAsymmetricPasetoMaker()
 	require.NoError(t, err)
-	
+
 	username := util.RandomOwner()
 	duration := time.Minute
 
@@ -32,7 +32,7 @@ func TestAsymmetricPasetoMaker(t *testing.T){
 	require.WithinDuration(t, expiredAt, payload.ExpiredAt, time.Second)
 }
 
-func TestAsymmetricExpiredPasetooken(t *testing.T){
+func TestAsymmetricExpiredPasetooken(t *testing.T) {
 	maker, err := NewAsymmetricPasetoMaker()
 	require.NoError(t, err)
 
@@ -46,11 +46,10 @@ func TestAsymmetricExpiredPasetooken(t *testing.T){
 	require.Nil(t, payload)
 }
 
-
-func TestSymmetricPasetoMaker(t *testing.T){
+func TestSymmetricPasetoMaker(t *testing.T) {
 	maker, err := NewSymmetricPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
-	
+
 	username := util.RandomOwner()
 	duration := time.Minute
 
@@ -70,7 +69,7 @@ func TestSymmetricPasetoMaker(t *testing.T){
 	require.WithinDuration(t, expiredAt, payload.ExpiredAt, time.Second)
 }
 
-func TestSymmetricExpiredPasetooken(t *testing.T){
+func TestSymmetricExpiredPasetooken(t *testing.T) {
 	maker, err := NewSymmetricPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 

@@ -13,9 +13,9 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-//Return a random integer between min and max
+// Return a random integer between min and max
 func RandomInt(min, max int64) int64 {
-	return min + rand.Int63n(max - min + 1)
+	return min + rand.Int63n(max-min+1)
 }
 
 func RandomString(n int) string {
@@ -34,7 +34,7 @@ func RandomOwner() string {
 }
 
 func RandomCurrency() string {
-	currencies := []string{"TWD","USD","CNY"}
+	currencies := []string{"TWD", "USD", "CNY"}
 	n := len(currencies)
 	return currencies[rand.Intn(n)]
 }
@@ -49,18 +49,18 @@ func RandomTag() string {
 	return tags[rand.Intn(n)]
 }
 
-func RandomTagList() []string{
+func RandomTagList() []string {
 	var tagList []string
-	for i := 0; i < 3; i++{
+	for i := 0; i < 3; i++ {
 		tagList = append(tagList, RandomTag())
 	}
 	return tagList
 }
 
 func RandomMoney() int64 {
-	return RandomInt(0,1000)
+	return RandomInt(0, 1000)
 }
 
-func RandomEmail() string{
+func RandomEmail() string {
 	return fmt.Sprintf("%s@email.com", RandomString(6))
 }

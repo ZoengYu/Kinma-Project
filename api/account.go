@@ -15,9 +15,9 @@ type createAccountRequest struct {
 }
 
 // Server expose method for API
-func (server *Server) createAccount(ctx *gin.Context){
+func (server *Server) createAccount(ctx *gin.Context) {
 	var req createAccountRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil{
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -25,7 +25,7 @@ func (server *Server) createAccount(ctx *gin.Context){
 	//get authPayload from gin.context
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.CreateAccountParams{
-		Owner		: authPayload.Username,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 	}
 	//Implement the DB CRUD
@@ -39,26 +39,26 @@ func (server *Server) createAccount(ctx *gin.Context){
 			}
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return 
+		return
 	}
 
 	ctx.JSON(http.StatusOK, account)
 }
 
 type getAccountRequest struct {
-	ID 			int64		`uri:"id" binding:"required,min=1"`
+	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
-func (server *Server) getAccount(ctx *gin.Context){
+func (server *Server) getAccount(ctx *gin.Context) {
 	var req getAccountRequest
-	if err := ctx.ShouldBindUri(&req); err != nil{
+	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	account, err := server.store.GetAccount(ctx, req.ID)
 	if err != nil {
-		if err == sql.ErrNoRows{
+		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
@@ -68,9 +68,9 @@ func (server *Server) getAccount(ctx *gin.Context){
 	}
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	
+
 	//valid if the request is belong to the login user
-	if !validIsMyAccount(ctx, account, authPayload){
+	if !validIsMyAccount(ctx, account, authPayload) {
 		return
 	}
 
@@ -78,22 +78,22 @@ func (server *Server) getAccount(ctx *gin.Context){
 }
 
 type listAccountRequest struct {
-	PageID 		int32	`form:"page_id" binding:"required,min=1"`
-	PageSize 	int32	`form:"page_size" binding:"required,min=5,max=10"`
+	PageID   int32 `form:"page_id" binding:"required,min=1"`
+	PageSize int32 `form:"page_size" binding:"required,min=5,max=10"`
 }
 
-func (server *Server) listMyAccount(ctx *gin.Context){
+func (server *Server) listMyAccount(ctx *gin.Context) {
 	var req listAccountRequest
-	if err := ctx.ShouldBindQuery(&req); err != nil{
+	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.ListAccountParams{
-		Owner	: authPayload.Username,
-		Limit	: req.PageSize,
+		Owner:  authPayload.Username,
+		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
 	accounts, err := server.store.ListAccount(ctx, arg)

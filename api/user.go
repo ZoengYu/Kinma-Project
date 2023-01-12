@@ -12,33 +12,34 @@ import (
 )
 
 type createUserRequest struct {
-	Username  string 	`json:"username" binding:"required,min=2"`
-	Password 	string 	`json:"password" binding:"required,min=6"`
-	Email			string 	`json:"email" binding:"required,email"`
-	Phone			string  `json:"phone" binding:"required,min=10"`
+	Username string `json:"username" binding:"required,min=2"`
+	Password string `json:"password" binding:"required,min=6"`
+	Email    string `json:"email" binding:"required,email"`
+	Phone    string `json:"phone" binding:"required,min=10"`
 }
 
-type userResponse struct{
+type userResponse struct {
 	Username          string    `json:"username"`
 	Email             string    `json:"email"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
-	Phone							string  	`json:"phone" binding:"required,min=10"`
+	Phone             string    `json:"phone" binding:"required,min=10"`
 }
 
-func newUserResponse(user db.User) userResponse{
+func newUserResponse(user db.User) userResponse {
 	return userResponse{
-		Username					: user.Username,
-		Email							: user.Email,
-		PasswordChangedAt	: user.PasswordChangedAt,
-		CreatedAt					: user.CreatedAt,
-		Phone							: user.Phone,
+		Username:          user.Username,
+		Email:             user.Email,
+		PasswordChangedAt: user.PasswordChangedAt,
+		CreatedAt:         user.CreatedAt,
+		Phone:             user.Phone,
 	}
 }
+
 // Server expose method for API
-func (server *Server) createUser(ctx *gin.Context){
+func (server *Server) createUser(ctx *gin.Context) {
 	var req createUserRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil{
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -46,13 +47,13 @@ func (server *Server) createUser(ctx *gin.Context){
 	hashedpassword, err := util.HashPassword(req.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return 
+		return
 	}
 	arg := db.CreateUserParams{
-		Username			: req.Username,
+		Username:       req.Username,
 		HashedPassword: hashedpassword,
-		Email					: req.Email,
-		Phone					: req.Phone,
+		Email:          req.Email,
+		Phone:          req.Phone,
 	}
 	//Implement the DB CRUD
 	user, err := server.store.CreateUser(ctx, arg)
@@ -65,7 +66,7 @@ func (server *Server) createUser(ctx *gin.Context){
 			}
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return 
+		return
 	}
 	//We don't want to return password to user
 	rsp := newUserResponse(user)
@@ -84,18 +85,18 @@ func (server *Server) createUser(ctx *gin.Context){
 // }
 
 type loginUserByMailRequest struct {
-	Email			string 	`json:"email" binding:"required,email"`
-	Password 	string 	`json:"password" binding:"required,min=6"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6"`
 }
 
 type loginUserByMailResponse struct {
-	AccessToken string 				`json:"access_token"`
-	User				userResponse 	`json:"user"`
+	AccessToken string       `json:"access_token"`
+	User        userResponse `json:"user"`
 }
 
-func (server *Server) loginUser(ctx *gin.Context){
+func (server *Server) loginUser(ctx *gin.Context) {
 	var req loginUserByMailRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil{
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -126,8 +127,8 @@ func (server *Server) loginUser(ctx *gin.Context){
 	}
 
 	rsp := loginUserByMailResponse{
-		AccessToken	: accessToken,
-		User				: newUserResponse(user),
+		AccessToken: accessToken,
+		User:        newUserResponse(user),
 	}
 
 	ctx.JSON(http.StatusOK, rsp)

@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestJWTMaker(t *testing.T){
+func TestJWTMaker(t *testing.T) {
 	maker, err := NewJWTMaker(util.RandomString(32))
 	require.NoError(t, err)
-	
+
 	username := util.RandomOwner()
 	duration := time.Minute
 
@@ -33,7 +33,7 @@ func TestJWTMaker(t *testing.T){
 	require.WithinDuration(t, expiredAt, payload.ExpiredAt, time.Second)
 }
 
-func TestExpiredJWToken(t *testing.T){
+func TestExpiredJWToken(t *testing.T) {
 
 	maker, err := NewJWTMaker(util.RandomString(32))
 	require.NoError(t, err)
@@ -49,7 +49,7 @@ func TestExpiredJWToken(t *testing.T){
 }
 
 // check none algorithm header is used if any
-func TestInvalidJWTTokenAlgNone(t *testing.T){
+func TestInvalidJWTTokenAlgNone(t *testing.T) {
 	payload, err := NewPayload(util.RandomOwner(), time.Minute)
 	require.NoError(t, err)
 

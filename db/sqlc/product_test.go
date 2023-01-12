@@ -10,18 +10,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomProduct(t *testing.T, account Account) Product{
-	
+func createRandomProduct(t *testing.T, account Account) Product {
+
 	tagList := util.RandomTagList()
-	
+
 	productArg := CreateProductParams{
-		AccountID	 : account.ID,
-		Title      : util.RandomString(5),
-		Content    : util.RandomString(20) + "_Content",
-		ProductTag : tagList,
+		AccountID:  account.ID,
+		Title:      util.RandomString(5),
+		Content:    util.RandomString(20) + "_Content",
+		ProductTag: tagList,
 	}
 
-	product, err := testQueries.CreateProduct(context.Background(),productArg)
+	product, err := testQueries.CreateProduct(context.Background(), productArg)
 	require.NoError(t, err)
 	require.NotEmpty(t, product)
 	require.Equal(t, product.AccountID, productArg.AccountID)
@@ -36,12 +36,12 @@ func createRandomProduct(t *testing.T, account Account) Product{
 	return product
 }
 
-func TestCreateProduct(t *testing.T){
+func TestCreateProduct(t *testing.T) {
 	account := createRandomAccount(t)
 	createRandomProduct(t, account)
 }
 
-func TestDeleteProduct(t *testing.T){
+func TestDeleteProduct(t *testing.T) {
 	account1 := createRandomAccount(t)
 	product1 := createRandomProduct(t, account1)
 	err := testQueries.DeleteAccountProduct(context.Background(), product1.ID)
@@ -68,22 +68,22 @@ func TestListProduct(t *testing.T) {
 	account := createRandomAccount(t)
 
 	for i := 0; i < 10; i++ {
-		
+
 		tagList := util.RandomTagList()
 
 		productArg := CreateProductParams{
-			AccountID	 : account.ID,
-			Title      : util.RandomString(5),
-			Content    : util.RandomString(20) + "_Content",
-			ProductTag : tagList,
+			AccountID:  account.ID,
+			Title:      util.RandomString(5),
+			Content:    util.RandomString(20) + "_Content",
+			ProductTag: tagList,
 		}
-		testQueries.CreateProduct(context.Background(),productArg)
+		testQueries.CreateProduct(context.Background(), productArg)
 	}
 
 	arg := ListMyProductParams{
-		AccountID : account.ID,
-		Limit		  : 5,
-		Offset		: 5,
+		AccountID: account.ID,
+		Limit:     5,
+		Offset:    5,
 	}
 
 	products, err := testQueries.ListMyProduct(context.Background(), arg)
@@ -102,10 +102,10 @@ func TestUpdateProduct(t *testing.T) {
 	tagList := util.RandomTagList()
 
 	arg := UpdateProductDetailParams{
-		ID					:		product1.ID,
-		Title 			:	 	util.RandomString(5),
-		Content 		:		util.RandomString(20) + "_Content",
-		ProductTag	: 	tagList,
+		ID:         product1.ID,
+		Title:      util.RandomString(5),
+		Content:    util.RandomString(20) + "_Content",
+		ProductTag: tagList,
 	}
 
 	updateProduct1, err := testQueries.UpdateProductDetail(context.Background(), arg)

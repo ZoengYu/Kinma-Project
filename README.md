@@ -7,7 +7,7 @@ Using **Golang** as a backend server, AngularJS as a frontend UI
 
 #
 ![Kinma Platform Demo](docs/static_files/kinma%20demo.png "Kinma Demo")
-
+![Kinma Platform Login Demo](docs/static_files/kinma_demo2.png "Kinma Demo2")
 
 # Integration with AWS
 **kinma-golangBackend** branch is used for continuous development

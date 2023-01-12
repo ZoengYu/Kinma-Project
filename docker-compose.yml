@@ -11,6 +11,8 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
       - TZ=Asia/Taipei
+    ports:
+      - "5432:5432"
   api:
     build:
       context: .
@@ -20,7 +22,7 @@ services:
       - DB_SOURCE=postgresql://root:password@db:5432/kinma_db?sslmode=disable
       - TZ=Asia/Taipei
     ports:
-      - "8080:8080"
+      - "8081:8081"
 
   kinma-ui:
       build:

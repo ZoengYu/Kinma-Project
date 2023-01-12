@@ -16,14 +16,14 @@ const (
 )
 
 var validCurrency validator.Func = func(filedLevel validator.FieldLevel) bool {
-	if currency, ok := filedLevel.Field().Interface().(string); ok{
+	if currency, ok := filedLevel.Field().Interface().(string); ok {
 		return util.IsSupportedCurrency(currency)
 	}
 
 	return false
 }
 
-func validIsMyAccount(ctx *gin.Context, account db.Account, authPayload *token.Payload) bool{
+func validIsMyAccount(ctx *gin.Context, account db.Account, authPayload *token.Payload) bool {
 	if account.Owner != authPayload.Username {
 		err := errors.New(ErrInvalidOwner)
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
